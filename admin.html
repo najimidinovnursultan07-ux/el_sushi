@@ -344,50 +344,6 @@
                 </div>
             </div>
 
-            <!-- Сырсөз өзгөртүү -->
-            <div class="bg-brand-card border border-brand-border rounded-2xl p-6 space-y-4">
-                <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                    <i class="fa-solid fa-lock text-brand-gold"></i> Сырсөздү өзгөртүү
-                </h3>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-400 mb-1">Учурдагы сырсөз</label>
-                    <div class="relative">
-                        <input type="password" id="setOldPass" placeholder="••••••••"
-                            class="w-full bg-brand-bg border border-brand-border rounded-xl p-3 pr-12 text-sm text-white focus:outline-none focus:border-brand-red">
-                        <button type="button" onclick="togglePassVis('setOldPass', this)"
-                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition p-1">
-                            <i class="fa-solid fa-eye"></i>
-                        </button>
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-400 mb-1">Жаңы сырсөз</label>
-                    <div class="relative">
-                        <input type="password" id="setNewPass" placeholder="••••••••"
-                            class="w-full bg-brand-bg border border-brand-border rounded-xl p-3 pr-12 text-sm text-white focus:outline-none focus:border-brand-red">
-                        <button type="button" onclick="togglePassVis('setNewPass', this)"
-                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition p-1">
-                            <i class="fa-solid fa-eye"></i>
-                        </button>
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-400 mb-1">Жаңы сырсөздү кайталаңыз</label>
-                    <div class="relative">
-                        <input type="password" id="setNewPass2" placeholder="••••••••"
-                            class="w-full bg-brand-bg border border-brand-border rounded-xl p-3 pr-12 text-sm text-white focus:outline-none focus:border-brand-red">
-                        <button type="button" onclick="togglePassVis('setNewPass2', this)"
-                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition p-1">
-                            <i class="fa-solid fa-eye"></i>
-                        </button>
-                    </div>
-                </div>
-                <button onclick="handleChangePassword()"
-                    class="w-full bg-brand-gold text-black hover:bg-yellow-500 font-bold py-3 rounded-xl transition">
-                    Сырсөздү Сактоо
-                </button>
-            </div>
-
             <!-- Сайт маалыматы -->
             <div class="bg-brand-card border border-brand-border rounded-2xl p-6 space-y-3">
                 <h3 class="text-lg font-bold text-white flex items-center gap-2">
@@ -497,25 +453,21 @@ let selectedBase64Image = '';
 let pendingDeleteCatId  = null;
 
 // ══════════════════════════════════════════════════
-//  СЫРСӨЗ ЛОГИКАСЫ
-//  Сырсөз localStorage'да сакталат; HTML'да жок.
-//  Биринчи кирүүдө default: 'admin'
+//  СЫРСӨЗ ЛОГИКАСЫ — туруктуу, өзгөртүүгө болбойт
 // ══════════════════════════════════════════════════
-function getStoredHash() {
-    return localStorage.getItem('elsushi_admin_hash') || btoa('admin');
-}
-function checkPassword(input) {
-    return btoa(input) === getStoredHash();
-}
-function setNewPassword(newPass) {
-    localStorage.setItem('elsushi_admin_hash', btoa(newPass));
+const ADMIN_HASH = '6c0eb5f82b8d0967d6a3efb889f23decd4387613acc46d187a57e8e54bdb3fbf';
+
+async function sha256(str) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
 }
 
-function handleLogin(e) {
+async function handleLogin(e) {
     e.preventDefault();
-    const pass = document.getElementById('adminPasswordInput').value;
+    const pass  = document.getElementById('adminPasswordInput').value;
     const errEl = document.getElementById('loginError');
-    if (checkPassword(pass)) {
+    const hash  = await sha256(pass);
+    if (hash === ADMIN_HASH) {
         errEl.classList.add('hidden');
         document.getElementById('loginModal').classList.add('hidden');
         document.getElementById('adminContent').classList.remove('hidden');
@@ -533,19 +485,6 @@ function handleLogout() {
     document.getElementById('adminPasswordInput').value = '';
     document.getElementById('loginError').classList.add('hidden');
 }
-
-function handleChangePassword() {
-    const oldP  = document.getElementById('setOldPass').value;
-    const newP  = document.getElementById('setNewPass').value;
-    const newP2 = document.getElementById('setNewPass2').value;
-    if (!checkPassword(oldP)) return showToast('Учурдагы сырсөз туура эмес!', 'error');
-    if (newP.length < 4)      return showToast('Жаңы сырсөз кем дегенде 4 символ болсун!', 'error');
-    if (newP !== newP2)       return showToast('Сырсөздөр дал келбейт!', 'error');
-    setNewPassword(newP);
-    document.getElementById('setOldPass').value  = '';
-    document.getElementById('setNewPass').value  = '';
-    document.getElementById('setNewPass2').value = '';
-    showToast('Сырсөз ийгиликтүү өзгөртүлдү!');
 }
 
 // ══════════════════════════════════════════════════
