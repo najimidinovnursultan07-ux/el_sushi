@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="ky">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Эл суши - Башкаруу Панели</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            red: '#FF2E55', darkred: '#D91B40',
+                            gold: '#FFB800', bg: '#0F1015',
+                            card: '#181A22', border: '#2A2D3A'
+                        }
+                    },
+                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0F1015; color: #E2E8F0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glow-red { box-shadow: 0 0 25px rgba(255,46,85,0.35); }
+        .logo-fallback { display:flex; align-items:center; gap:10px; }
+        .logo-fallback .logo-icon { width:44px; height:44px; background:linear-gradient(135deg,#FF2E55,#D91B40); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:22px; color:white; font-weight:900; flex-shrink:0; }
+        .logo-fallback .logo-text-main { font-size:20px; font-weight:900; color:white; line-height:1; letter-spacing:2px; }
+        .logo-fallback .logo-text-sub  { font-size:9px; color:#FF2E55; font-weight:700; letter-spacing:4px; text-transform:uppercase; }
+    </style>
+</head>
+<body class="bg-brand-bg min-h-screen flex flex-col justify-between">
+
+<!-- ══════════════════════════════════════════
+     LOGIN OVERLAY
+══════════════════════════════════════════ -->
+<div id="loginModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
+    <div class="bg-brand-card border border-brand-border w-full max-w-md rounded-2xl p-8 text-center space-y-6">
+        <div class="flex justify-center">
+            <img id="loginLogo" src="logo.png" alt="Эл Суши" class="h-16 w-auto object-contain mx-auto"
+                 onerror="this.style.display='none'; document.getElementById('loginLogoFallback').style.display='flex';">
+            <div id="loginLogoFallback" class="logo-fallback justify-center" style="display:none;">
+                <div class="logo-icon">🍣</div>
+                <div>
+                    <div class="logo-text-main">ЭЛ СУШИ</div>
+                    <div class="logo-text-sub">SUSHI BAR</div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <h2 class="text-2xl font-black text-white">Эл суши — Админка</h2>
+            <p class="text-xs text-gray-400 mt-1">Системага кирүү үчүн сырсөздү жазыңыз</p>
+        </div>
+        <!-- Сырсөздү өзгөртүү мүмкүнчүлүгү -->
+        <div id="loginError" class="hidden bg-red-500/10 border border-red-500/30 text-red-400 text-xs rounded-xl p-3">
+            Сырсөз туура эмес!
+        </div>
+        <form onsubmit="handleLogin(event)" class="space-y-4">
+            <div class="relative">
+                <input type="password" id="adminPasswordInput" required placeholder="Сырсөздү киргизиңиз"
+                    class="w-full bg-brand-bg border border-brand-border rounded-xl p-3 pr-12 text-sm text-center text-white focus:outline-none focus:border-brand-red">
+                <button type="button" onclick="togglePassVis('adminPasswordInput', this)"
+                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition p-1">
+                    <i class="fa-solid fa-eye"></i>
+                </button>
+            </div>
+            <button type="submit" class="w-full bg-brand-red hover:bg-brand-darkred text-white font-bold py-3.5 rounded-xl transition glow-red">
+                Кирүү
+            </button>
+        </form>
+        <a href="index.html" class="block text-xs text-gray-400 hover:text-white transition">← Негизги сайтка кайтуу</a>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MAIN ADMIN CONTENT
+══════════════════════════════════════════ -->
+<div id="adminContent" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
+
+    <!-- HEADER -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 border-b border-brand-border pb-6">
+        <div class="flex items-center gap-3">
+            <img id="adminHeaderLogo" src="logo.png" alt="Эл Суши" class="h-12 w-auto object-contain"
+                 onerror="this.style.display='none'; document.getElementById('adminHeaderLogoFallback').style.display='flex';">
+            <div id="adminHeaderLogoFallback" class="logo-fallback" style="display:none;">
+                <div class="logo-icon" style="width:36px;height:36px;font-size:18px;">🍣</div>
+                <div><div class="logo-text-main" style="font-size:17px;">ЭЛ СУШИ</div></div>
+            </div>
+            <div>
+                <h1 class="text-2xl font-extrabold text-white">Башкаруу Панели</h1>
+                <p class="text-gray-400 text-sm mt-0.5">Сайтты, менюну жана филиалдарды башкаруу</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <button onclick="handleLogout()" class="bg-brand-bg border border-brand-border text-gray-400 hover:text-white px-4 py-2.5 rounded-xl text-sm font-semibold inline-flex items-center gap-2">
+                <i class="fa-solid fa-right-from-bracket"></i> Чыгуу
+            </button>
+            <a href="index.html" class="bg-brand-card border border-brand-border text-gray-300 hover:text-white px-5 py-2.5 rounded-xl text-sm font-semibold inline-flex items-center gap-2">
+                <i class="fa-solid fa-arrow-left"></i> Сайтка кайтуу
+            </a>
+        </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="flex gap-3 mb-8 border-b border-brand-border pb-4 overflow-x-auto no-scrollbar">
+        <button onclick="switchAdminTab('products')"  id="tabBtn-products"  class="tab-btn px-5 py-2.5 rounded-xl font-bold text-sm whitespace-nowrap">
+            <i class="fa-solid fa-bowl-food mr-2"></i>Товарлар
+        </button>
+        <button onclick="switchAdminTab('branches')"  id="tabBtn-branches"  class="tab-btn px-5 py-2.5 rounded-xl font-bold text-sm whitespace-nowrap">
+            <i class="fa-solid fa-store mr-2"></i>Филиалдар
+        </button>
+        <button onclick="switchAdminTab('categories')" id="tabBtn-categories" class="tab-btn px-5 py-2.5 rounded-xl font-bold text-sm whitespace-nowrap">
+            <i class="fa-solid fa-list mr-2"></i>Категориялар
+        </button>
+        <button onclick="switchAdminTab('orders')"    id="tabBtn-orders"    class="tab-btn px-5 py-2.5 rounded-xl font-bold text-sm whitespace-nowrap">
+            <i class="fa-solid fa-receipt mr-2"></i>Заказдар
+        </button>
+        <button onclick="switchAdminTab('settings')"  id="tabBtn-settings"  class="tab-btn px-5 py-2.5 rounded-xl font-bold text-sm whitespace-nowrap">
+            <i class="fa-solid fa-gear mr-2"></i>Жөндөөлөр
+        </button>
+    </div>
+
+    <!-- ─── TAB 1: PRODUCTS ─────────────────────── -->
+    <div id="adminTab-products">
+        <!-- Add form -->
+        <div class="bg-brand-card border border-brand-border rounded-2xl p-6 mb-6">
+            <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-plus-circle text-brand-red"></i>
+                <span id="productFormTitle">Жаңы товар кошуу</span>
+            </h3>
+            <form onsubmit="handleSaveProduct(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <input type="hidden" id="editProductId" value="">
+                <input type="text"   id="newProdName"     required placeholder="Товардын аты"
+                    class="bg-brand-bg border border-brand-border rounded-xl p-3 text-sm text-white focus:outline-none focus:border-brand-red">
+                <input type="number" id="newProdPrice"    required placeholder="Баасы (сом)"
+                    class="bg-brand-bg border border-brand-border rounded-xl p-3 text-sm text-white focus:outline-none focus:border-brand-red">
+                <select id="newProdCategory"
+                    class="bg-brand-bg border border-brand-border rounded-xl p-3 text-sm text-white focus:outline-none focus:border-brand-red"></select>
+                <input type="text"   id="newProdWeight"   placeholder="Салмагы (мис: 280г)"
+                    class="bg-brand-bg border border-brand-border rounded-xl p-3 text-sm text-white focus:outline-none focus:border-brand-red">
+                <input type="text"   id="newProdBadge"    placeholder="Белги (мис: Хит) — милдеттүү эмес"
+                    class="bg-brand-bg border border-brand-border rounded-xl p-3 text-sm text-white focus:outline-none focus:border-brand-red">
+                <!-- Image -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-semibold text-gray-400">Сүрөт:</label>
+                    <div class="grid grid-cols-1 gap-2">
+                        <label for="newProdFile" class="flex items-center justify-center gap-2 bg-brand-bg border border-dashed border-brand-red/60 hover:border-brand-red text-xs text-white p-3 rounded-xl cursor-pointer">
+                            <i class="fa-solid fa-image text-brand-red"></i>
+                            <span id="fileNameLabel">Галереядан тандоо</span>
+                        </label>
+                        <input type="file" id="newProdFile" accept="image/*" onchange="handleFileSelect(event)" class="hidden">
+                        <input type="url" id="newProdImg" placeholder="Же URL шилтемеси"
+                            class="bg-brand-bg border border-brand-border rounded-xl p-3 text-sm text-white focus:outline-none focus:border-brand-red">
+                    </div>
+                </div>
+                <div class="flex items-center justify-center">
+                    <div id="imagePreviewContainer" class="hidden relative w-20 h-20 rounded-xl overflow-hidden border border-brand-border">
+                        <img id="imagePreview" src="" class="w-full h-full object-cover">
+                    </div>
+                </div>
+                <input type="text" id="newProdDesc" placeholder="Ингредиенттер сүрөттөмөсү"
+                    class="md:col-span-3 bg-brand-bg border border-brand-border rounded-xl p-3 text-sm text-white focus:outline-none focus:border-brand-red">
+                <div class="md:col-span-3 flex gap-3">
+                    <button type="submit" id="productSubmitBtn"
+                        class="flex-1 bg-brand-red hover:bg-brand-darkred text-white font-bold py-3 rounded-xl transition glow-red">
+                        Товарды Сактоо
+                    </button>
+                    <button type="button" id="productCancelBtn" onclick="cancelEditProduct()"
+                        class="hidden bg-brand-bg border border-brand-border text-gray-400 hover:text-white font-bold py-3 px-6 rounded-xl transition">
+                        Жокко чыгаруу
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Products table -->
+        <div class="bg-brand-card border border-brand-border rounded-2xl p-6">
+            <h3 class="text-lg font-bold text-white mb-4">Менюдагы товарлар</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-gray-300">
+                    <thead class="text-xs uppercase bg-brand-bg text-gray-400 border-b border-brand-border">
+                        <tr>
+                            <th class="p-3">Сүрөт</th>
+                            <th class="p-3">Аты</th>
+                            <th class="p-3">Категория</th>
+                            <th class="p-3">Баасы</th>
+                            <th class="p-3 text-right">Аракет</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminProductsTable"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─── TAB 2: BRANCHES ─────────────────────── -->
+    <div id="adminTab-branches" class="hidden">
+        <div class="bg-brand-card border border-brand-border rounded-2xl p-6 mb-6">
+            <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-code-branch text-brand-gold"></i>
+                <span id="branchFormTitle">Жаңы Филиал кошуу</span>
+            </h3>
+            <form onsubmit="handleSaveBranch(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <input type="hidden" id="editBranchId" value="">
+                <input type="text" id="newBranchName"    required placeholder="Филиалдын аты (мис: Центр)"
+                    class="bg-brand-bg border border-brand-border rounded-xl p-3 text-sm text-white focus:outline-none focus:border-brand-red">
+                <input type="text" id="newBranchAddress" required placeholder="Дареги (мис: Манас 40)"
+                    class="bg-brand-bg border border-brand-border rounded-xl p-3 text-sm text-white focus:outline-none focus:border-brand-red">
+                <input type="text" id="newBranchPhone"   required placeholder="WhatsApp номери (996555001122)"
+                    class="bg-brand-bg border border-brand-border rounded-xl p-3 text-sm text-white focus:outline-none focus:border-brand-red">
+                <div class="md:col-span-3 flex gap-3">
+                    <button type="submit"
+                        class="flex-1 bg-brand-gold text-black hover:bg-yellow-500 font-bold py-3 rounded-xl transition">
+                        Филиалды Сактоо
+                    </button>
+                    <button type="button" id="branchCancelBtn" onclick="cancelEditBranch()"
+                        class="hidden bg-brand-bg border border-brand-border text-gray-400 hover:text-white font-bold py-3 px-6 rounded-xl transition">
+                        Жокко чыгаруу
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="bg-brand-card border border-brand-border rounded-2xl p-6">
+            <h3 class="text-lg font-bold text-white mb-4">Биздин Филиалдардын тизмеси</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-gray-300">
+                    <thead class="text-xs uppercase bg-brand-bg text-gray-400 border-b border-brand-border">
+                        <tr>
+                            <th class="p-3">Филиал Аты</th>
+                            <th class="p-3">Дареги</th>
+                            <th class="p-3">WhatsApp Номер</th>
+                            <th class="p-3 text-right">Аракет</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminBranchesTable"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─── TAB 3: CATEGORIES ───────────────────── -->
+    <div id="adminTab-categories" class="hidden">
+        <div class="bg-brand-card border border-brand-border rounded-2xl p-6 mb-6">
+            <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-tags text-green-500"></i> Жаңы Категория кошуу
+            </h3>
+            <form onsubmit="handleAddNewCategory(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <input type="text" id="newCatId"    required placeholder="Категория ID (мис: soups)"
+                    class="bg-brand-bg border border-brand-border rounded-xl p-3 text-sm text-white focus:outline-none focus:border-brand-red">
+                <input type="text" id="newCatLabel" required placeholder="Аты (мис: Суптар)"
+                    class="bg-brand-bg border border-brand-border rounded-xl p-3 text-sm text-white focus:outline-none focus:border-brand-red">
+                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition">
+                    Категория кошуу
+                </button>
+            </form>
+        </div>
+        <div class="bg-brand-card border border-brand-border rounded-2xl p-6">
+            <h3 class="text-lg font-bold text-white mb-4">Категориялар тизмеси</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-gray-300">
+                    <thead class="text-xs uppercase bg-brand-bg text-gray-400 border-b border-brand-border">
+                        <tr>
+                            <th class="p-3">ID</th>
+                            <th class="p-3">Аты</th>
+                            <th class="p-3">Продукттар саны</th>
+                            <th class="p-3 text-right">Өчүрүү</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminCategoriesTable"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─── TAB 4: ORDERS ───────────────────────── -->
+    <div id="adminTab-orders" class="hidden">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-xl font-bold text-white">Заказдар тарыхы</h2>
+            <button onclick="clearAllOrders()" class="bg-brand-bg border border-red-500/40 text-red-400 hover:bg-red-500/10 px-4 py-2 rounded-xl text-sm font-semibold transition flex items-center gap-2">
+                <i class="fa-solid fa-trash"></i> Тарыхты тазалоо
+            </button>
+        </div>
+        <div id="ordersContainer">
+            <!-- Rendered by JS -->
+        </div>
+    </div>
+
+    <!-- ─── TAB 5: SETTINGS ─────────────────────── -->
+    <div id="adminTab-settings" class="hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+            <!-- Байланыш жөндөөлөрү -->
+            <div class="bg-brand-card border border-brand-border rounded-2xl p-6 space-y-4">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-phone text-brand-red"></i> Байланыш маалыматы
+                </h3>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1">Телефон номери</label>
+                    <input type="text" id="setPhone" placeholder="+996 (555) 00-11-22"
+                        class="w-full bg-brand-bg border border-brand-border rounded-xl p-3 text-sm text-white focus:outline-none focus:border-brand-red">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1">Дарек</label>
+                    <input type="text" id="setAddress" placeholder="Бишкек ш., Манас проспектиси 40"
+                        class="w-full bg-brand-bg border border-brand-border rounded-xl p-3 text-sm text-white focus:outline-none focus:border-brand-red">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1">Иштөө убактысы</label>
+                    <input type="text" id="setWorkHours" placeholder="10:00 - 02:00"
+                        class="w-full bg-brand-bg border border-brand-border rounded-xl p-3 text-sm text-white focus:outline-none focus:border-brand-red">
+                </div>
+            </div>
+
+            <!-- Социалдык тармактар -->
+            <div class="bg-brand-card border border-brand-border rounded-2xl p-6 space-y-4">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-share-nodes text-brand-gold"></i> Социалдык тармактар
+                </h3>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1">
+                        <i class="fa-brands fa-instagram text-pink-500 mr-1"></i> Instagram URL
+                    </label>
+                    <input type="url" id="setInstagram" placeholder="https://instagram.com/elsushi"
+                        class="w-full bg-brand-bg border border-brand-border rounded-xl p-3 text-sm text-white focus:outline-none focus:border-brand-red">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1">
+                        <i class="fa-brands fa-whatsapp text-green-500 mr-1"></i> WhatsApp номери (санарип гана)
+                    </label>
+                    <input type="text" id="setWhatsapp" placeholder="996555001122"
+                        class="w-full bg-brand-bg border border-brand-border rounded-xl p-3 text-sm text-white focus:outline-none focus:border-brand-red">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1">
+                        <i class="fa-brands fa-telegram text-sky-400 mr-1"></i> Telegram URL
+                    </label>
+                    <input type="url" id="setTelegram" placeholder="https://t.me/elsushi"
+                        class="w-full bg-brand-bg border border-brand-border rounded-xl p-3 text-sm text-white focus:outline-none focus:border-brand-red">
+                </div>
+            </div>
+
+            <!-- Сырсөз өзгөртүү -->
+            <div class="bg-brand-card border border-brand-border rounded-2xl p-6 space-y-4">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-lock text-brand-gold"></i> Сырсөздү өзгөртүү
+                </h3>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1">Учурдагы сырсөз</label>
+                    <div class="relative">
+                        <input type="password" id="setOldPass" placeholder="••••••••"
+                            class="w-full bg-brand-bg border border-brand-border rounded-xl p-3 pr-12 text-sm text-white focus:outline-none focus:border-brand-red">
+                        <button type="button" onclick="togglePassVis('setOldPass', this)"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition p-1">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1">Жаңы сырсөз</label>
+                    <div class="relative">
+                        <input type="password" id="setNewPass" placeholder="••••••••"
+                            class="w-full bg-brand-bg border border-brand-border rounded-xl p-3 pr-12 text-sm text-white focus:outline-none focus:border-brand-red">
+                        <button type="button" onclick="togglePassVis('setNewPass', this)"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition p-1">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1">Жаңы сырсөздү кайталаңыз</label>
+                    <div class="relative">
+                        <input type="password" id="setNewPass2" placeholder="••••••••"
+                            class="w-full bg-brand-bg border border-brand-border rounded-xl p-3 pr-12 text-sm text-white focus:outline-none focus:border-brand-red">
+                        <button type="button" onclick="togglePassVis('setNewPass2', this)"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition p-1">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <button onclick="handleChangePassword()"
+                    class="w-full bg-brand-gold text-black hover:bg-yellow-500 font-bold py-3 rounded-xl transition">
+                    Сырсөздү Сактоо
+                </button>
+            </div>
+
+            <!-- Сайт маалыматы -->
+            <div class="bg-brand-card border border-brand-border rounded-2xl p-6 space-y-3">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-circle-info text-sky-400"></i> Сайт маалыматы
+                </h3>
+                <div class="text-xs text-gray-400 space-y-2 leading-relaxed">
+                    <p>📦 Жалпы товарлар: <b id="infoProducts" class="text-white">—</b></p>
+                    <p>🏢 Филиалдар: <b id="infoBranches" class="text-white">—</b></p>
+                    <p>📋 Категориялар: <b id="infoCategories" class="text-white">—</b></p>
+                    <p>🛍️ Жалпы заказдар: <b id="infoOrders" class="text-white">—</b></p>
+                    <p>💾 localStorage колдонуу: <b id="infoStorage" class="text-white">—</b></p>
+                </div>
+                <button onclick="handleResetData()"
+                    class="w-full mt-2 bg-brand-bg border border-red-500/40 text-red-400 hover:bg-red-500/10 font-bold py-3 rounded-xl transition text-sm">
+                    <i class="fa-solid fa-rotate-left mr-2"></i>Маалыматтарды баштапкы абалга кайтаруу
+                </button>
+            </div>
+        </div>
+
+        <!-- Save settings button -->
+        <div class="mt-6">
+            <button onclick="saveSettings()"
+                class="w-full bg-brand-red hover:bg-brand-darkred text-white font-bold py-4 rounded-xl transition glow-red flex items-center justify-center gap-2 text-base">
+                <i class="fa-solid fa-floppy-disk"></i> Жөндөөлөрдү Сактоо
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="fixed bottom-6 right-6 z-50 bg-brand-red text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 translate-y-20 opacity-0 transition-all duration-300">
+    <i class="fa-solid fa-circle-check text-xl"></i>
+    <span id="toastMsg" class="font-medium text-sm">Ийгиликтүү!</span>
+</div>
+
+<!-- DELETE CATEGORY MODAL -->
+<div id="deleteCatModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+    <div class="bg-brand-card border border-brand-border w-full max-w-md rounded-2xl p-6 space-y-4">
+        <h3 class="text-lg font-bold text-white">⚠️ Категорияны жою</h3>
+        <p class="text-sm text-gray-400">
+            Бул категорияга <b id="deleteCatProductCount" class="text-brand-red">0</b> товар байланышкан.
+            Аларды кайсы категорияга которолу?
+        </p>
+        <div>
+            <label class="block text-xs font-semibold text-gray-400 mb-1">Которуу категориясы:</label>
+            <select id="deleteCatTargetSelect"
+                class="w-full bg-brand-bg border border-brand-border rounded-xl p-3 text-sm text-white focus:outline-none focus:border-brand-red"></select>
+        </div>
+        <div class="flex gap-3">
+            <button onclick="confirmDeleteCategory()"
+                class="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl transition">
+                Жою жана Которуу
+            </button>
+            <button onclick="document.getElementById('deleteCatModal').classList.add('hidden')"
+                class="flex-1 bg-brand-bg border border-brand-border text-gray-400 hover:text-white font-bold py-3 rounded-xl transition">
+                Жокко чыгаруу
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .no-scrollbar::-webkit-scrollbar { display:none; }
+    .no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
+    .tab-btn { transition: all 0.2s; }
+    .tab-btn.active { background:#FF2E55; color:white; }
+    .tab-btn:not(.active) { background:#181A22; color:#9CA3AF; border:1px solid #2A2D3A; }
+    .tab-btn:not(.active):hover { color:white; }
+</style>
+
+<script>
+// ══════════════════════════════════════════════════
+//  МААЛЫМАТТАР ЖАНА DEFAULT МААНИЛЕР
+// ══════════════════════════════════════════════════
+const defaultCategories = [
+    { id: 'all', label: 'Бардыгы' },
+    { id: 'rolls', label: 'Роллдор' },
+    { id: 'sets', label: 'Сеттер' },
+    { id: 'tempura', label: 'Темпура' },
+    { id: 'sushi', label: 'Суши' },
+    { id: 'drinks', label: 'Суусундуктар' }
+];
+const defaultBranches = [
+    { id: 1, name: 'Эл суши - Бишкек Центр', address: 'Манас проспектиси 40', phone: '996555001122' },
+    { id: 2, name: 'Эл суши - Түштүк', address: '7-Кичи район 12/2', phone: '996700001122' }
+];
+const defaultProducts = [
+    { id: 1, name: 'Филадельфия Классик', category: 'rolls', price: 520, weight: '280г (8 шт)', desc: 'Лосось, каймак сыры (филадельфия), бадыраң, суши күрүчү.', image: 'https://images.unsplash.com/photo-1611143669185-af224c5e3252?auto=format&fit=crop&w=600&q=80', badge: 'Хит' },
+    { id: 2, name: 'Калифорния Уграсы',  category: 'rolls', price: 480, weight: '260г (8 шт)', desc: 'Угра (угорь), авокадо, масаго икрасы, унаги соусу.', image: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=600&q=80' },
+    { id: 3, name: 'Запеченный Сет VIP', category: 'sets',  price: 1850, weight: '1200г (32 шт)', desc: 'Запеченная Филадельфия, Запеченный сыр ролл, Тобико Сет.', image: 'https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?auto=format&fit=crop&w=600&q=80', badge: 'Топ' }
+];
+const defaultSiteSettings = {
+    phone: '+996 (555) 00-11-22',
+    address: 'Бишкек ш., Манас проспектиси 40',
+    workHours: '10:00 - 02:00',
+    instagram: 'https://instagram.com',
+    whatsapp: '996555001122',
+    telegram: 'https://t.me'
+};
+
+let categories   = JSON.parse(localStorage.getItem('elsushi_categories')) || defaultCategories;
+let branches     = JSON.parse(localStorage.getItem('elsushi_branches'))   || defaultBranches;
+let products     = JSON.parse(localStorage.getItem('elsushi_products'))   || defaultProducts;
+let siteSettings = JSON.parse(localStorage.getItem('elsushi_settings'))   || defaultSiteSettings;
+
+let selectedBase64Image = '';
+let pendingDeleteCatId  = null;
+
+// ══════════════════════════════════════════════════
+//  СЫРСӨЗ ЛОГИКАСЫ
+//  Сырсөз localStorage'да сакталат; HTML'да жок.
+//  Биринчи кирүүдө default: 'admin'
+// ══════════════════════════════════════════════════
+function getStoredHash() {
+    return localStorage.getItem('elsushi_admin_hash') || btoa('admin');
+}
+function checkPassword(input) {
+    return btoa(input) === getStoredHash();
+}
+function setNewPassword(newPass) {
+    localStorage.setItem('elsushi_admin_hash', btoa(newPass));
+}
+
+function handleLogin(e) {
+    e.preventDefault();
+    const pass = document.getElementById('adminPasswordInput').value;
+    const errEl = document.getElementById('loginError');
+    if (checkPassword(pass)) {
+        errEl.classList.add('hidden');
+        document.getElementById('loginModal').classList.add('hidden');
+        document.getElementById('adminContent').classList.remove('hidden');
+        initAdmin();
+    } else {
+        errEl.classList.remove('hidden');
+        document.getElementById('adminPasswordInput').value = '';
+        document.getElementById('adminPasswordInput').focus();
+    }
+}
+
+function handleLogout() {
+    document.getElementById('adminContent').classList.add('hidden');
+    document.getElementById('loginModal').classList.remove('hidden');
+    document.getElementById('adminPasswordInput').value = '';
+    document.getElementById('loginError').classList.add('hidden');
+}
+
+function handleChangePassword() {
+    const oldP  = document.getElementById('setOldPass').value;
+    const newP  = document.getElementById('setNewPass').value;
+    const newP2 = document.getElementById('setNewPass2').value;
+    if (!checkPassword(oldP)) return showToast('Учурдагы сырсөз туура эмес!', 'error');
+    if (newP.length < 4)      return showToast('Жаңы сырсөз кем дегенде 4 символ болсун!', 'error');
+    if (newP !== newP2)       return showToast('Сырсөздөр дал келбейт!', 'error');
+    setNewPassword(newP);
+    document.getElementById('setOldPass').value  = '';
+    document.getElementById('setNewPass').value  = '';
+    document.getElementById('setNewPass2').value = '';
+    showToast('Сырсөз ийгиликтүү өзгөртүлдү!');
+}
+
+// ══════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════
+function initAdmin() {
+    renderAdminTables();
+    renderCategorySelect();
+    loadSettingsForm();
+    switchAdminTab('products');
+    updateSiteInfo();
+}
+
+// ══════════════════════════════════════════════════
+//  TABS
+// ══════════════════════════════════════════════════
+const ALL_TABS = ['products','branches','categories','orders','settings'];
+
+function switchAdminTab(tab) {
+    ALL_TABS.forEach(t => {
+        document.getElementById(`adminTab-${t}`).classList.add('hidden');
+        document.getElementById(`tabBtn-${t}`).classList.remove('active');
+    });
+    document.getElementById(`adminTab-${tab}`).classList.remove('hidden');
+    document.getElementById(`tabBtn-${tab}`).classList.add('active');
+    if (tab === 'orders')   renderOrdersTab();
+    if (tab === 'settings') { loadSettingsForm(); updateSiteInfo(); }
+}
+
+// ══════════════════════════════════════════════════
+//  PRODUCTS — CRUD
+// ══════════════════════════════════════════════════
+function handleFileSelect(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = evt => {
+        selectedBase64Image = evt.target.result;
+        document.getElementById('fileNameLabel').innerText = file.name;
+        document.getElementById('imagePreview').src = selectedBase64Image;
+        document.getElementById('imagePreviewContainer').classList.remove('hidden');
+        document.getElementById('newProdImg').value = '';
+    };
+    reader.readAsDataURL(file);
+}
+
+function handleSaveProduct(e) {
+    e.preventDefault();
+    const urlInput  = document.getElementById('newProdImg').value;
+    const finalImg  = selectedBase64Image || urlInput;
+    const editId    = document.getElementById('editProductId').value;
+
+    if (!finalImg && !editId) {
+        const existing = products.find(p => p.id === parseInt(editId));
+        if (!existing || !existing.image) {
+            showToast('Сүрөт тандаңыз же URL киргизиңиз!', 'error');
+            return;
+        }
+    }
+
+    const name     = document.getElementById('newProdName').value.trim();
+    const price    = parseFloat(document.getElementById('newProdPrice').value);
+    const category = document.getElementById('newProdCategory').value;
+    const weight   = document.getElementById('newProdWeight').value.trim();
+    const badge    = document.getElementById('newProdBadge').value.trim();
+    const desc     = document.getElementById('newProdDesc').value.trim();
+
+    if (editId) {
+        // РЕДАКЦИЯЛОО
+        const idx = products.findIndex(p => p.id === parseInt(editId));
+        if (idx !== -1) {
+            products[idx] = {
+                ...products[idx],
+                name, price, category, weight, badge: badge || undefined,
+                desc,
+                image: finalImg || products[idx].image
+            };
+        }
+        showToast('Товар жаңыланды!');
+        cancelEditProduct();
+    } else {
+        // КОШУУ
+        if (!finalImg) { showToast('Сүрөт тандаңыз же URL киргизиңиз!', 'error'); return; }
+        products.push({ id: Date.now(), name, price, category, weight, badge: badge || undefined, desc, image: finalImg });
+        showToast('Товар ийгиликтүү кошулду!');
+    }
+
+    try { localStorage.setItem('elsushi_products', JSON.stringify(products)); }
+    catch(err) { showToast('Сүрөт өтө чоң! Кичирээк тандаңыз.', 'error'); return; }
+
+    resetProductForm();
+    renderAdminTables();
+    renderCategorySelect();
+}
+
+function editProduct(id) {
+    const p = products.find(p => p.id === id);
+    if (!p) return;
+    document.getElementById('editProductId').value  = id;
+    document.getElementById('newProdName').value    = p.name;
+    document.getElementById('newProdPrice').value   = p.price;
+    document.getElementById('newProdCategory').value = p.category;
+    document.getElementById('newProdWeight').value  = p.weight  || '';
+    document.getElementById('newProdBadge').value   = p.badge   || '';
+    document.getElementById('newProdDesc').value    = p.desc    || '';
+    document.getElementById('newProdImg').value     = p.image && !p.image.startsWith('data:') ? p.image : '';
+    if (p.image) {
+        document.getElementById('imagePreview').src = p.image;
+        document.getElementById('imagePreviewContainer').classList.remove('hidden');
+    }
+    document.getElementById('productFormTitle').innerText = '✏️ Товарды редакциялоо';
+    document.getElementById('productCancelBtn').classList.remove('hidden');
+    document.getElementById('productSubmitBtn').innerText = 'Өзгөртүүлөрдү Сактоо';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.getElementById('newProdName').focus();
+}
+
+function cancelEditProduct() {
+    resetProductForm();
+}
+
+function resetProductForm() {
+    document.getElementById('editProductId').value = '';
+    document.getElementById('newProdName').value   = '';
+    document.getElementById('newProdPrice').value  = '';
+    document.getElementById('newProdWeight').value = '';
+    document.getElementById('newProdBadge').value  = '';
+    document.getElementById('newProdDesc').value   = '';
+    document.getElementById('newProdImg').value    = '';
+    document.getElementById('fileNameLabel').innerText = 'Галереядан тандоо';
+    document.getElementById('imagePreviewContainer').classList.add('hidden');
+    document.getElementById('productFormTitle').innerText = 'Жаңы товар кошуу';
+    document.getElementById('productCancelBtn').classList.add('hidden');
+    document.getElementById('productSubmitBtn').innerText = 'Товарды Сактоо';
+    selectedBase64Image = '';
+    const fi = document.getElementById('newProdFile');
+    if (fi) fi.value = '';
+}
+
+function deleteProduct(id) {
+    if (!confirm('Бул товарды жойосузбу?')) return;
+    products = products.filter(p => p.id !== id);
+    localStorage.setItem('elsushi_products', JSON.stringify(products));
+    renderAdminTables();
+    showToast('Товар өчүрүлдү');
+}
+
+// ══════════════════════════════════════════════════
+//  BRANCHES — CRUD
+// ══════════════════════════════════════════════════
+function handleSaveBranch(e) {
+    e.preventDefault();
+    const editId  = document.getElementById('editBranchId').value;
+    const name    = document.getElementById('newBranchName').value.trim();
+    const address = document.getElementById('newBranchAddress').value.trim();
+    const phone   = document.getElementById('newBranchPhone').value.replace(/[^0-9]/g, '');
+
+    if (editId) {
+        const idx = branches.findIndex(b => b.id === parseInt(editId));
+        if (idx !== -1) branches[idx] = { ...branches[idx], name, address, phone };
+        showToast('Филиал жаңыланды!');
+        cancelEditBranch();
+    } else {
+        branches.push({ id: Date.now(), name, address, phone });
+        showToast('Филиал кошулду');
+    }
+    localStorage.setItem('elsushi_branches', JSON.stringify(branches));
+    renderAdminTables();
+    resetBranchForm();
+}
+
+function editBranch(id) {
+    const b = branches.find(b => b.id === id);
+    if (!b) return;
+    document.getElementById('editBranchId').value     = id;
+    document.getElementById('newBranchName').value    = b.name;
+    document.getElementById('newBranchAddress').value = b.address;
+    document.getElementById('newBranchPhone').value   = b.phone;
+    document.getElementById('branchFormTitle').innerText = '✏️ Филиалды редакциялоо';
+    document.getElementById('branchCancelBtn').classList.remove('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function cancelEditBranch() {
+    resetBranchForm();
+}
+
+function resetBranchForm() {
+    document.getElementById('editBranchId').value     = '';
+    document.getElementById('newBranchName').value    = '';
+    document.getElementById('newBranchAddress').value = '';
+    document.getElementById('newBranchPhone').value   = '';
+    document.getElementById('branchFormTitle').innerText = 'Жаңы Филиал кошуу';
+    document.getElementById('branchCancelBtn').classList.add('hidden');
+}
+
+function deleteBranch(id) {
+    if (branches.length <= 1) return showToast('Кем дегенде 1 филиал калышы керек!', 'error');
+    if (!confirm('Бул филиалды жойосузбу?')) return;
+    branches = branches.filter(b => b.id !== id);
+    localStorage.setItem('elsushi_branches', JSON.stringify(branches));
+    renderAdminTables();
+    showToast('Филиал өчүрүлдү');
+}
+
+// ══════════════════════════════════════════════════
+//  CATEGORIES — CRUD + коопсуз жою
+// ══════════════════════════════════════════════════
+function handleAddNewCategory(e) {
+    e.preventDefault();
+    const id    = document.getElementById('newCatId').value.toLowerCase().replace(/\s+/g, '');
+    const label = document.getElementById('newCatLabel').value.trim();
+    if (categories.some(c => c.id === id)) return showToast('Бул ID колдонулуп жатат!', 'error');
+    categories.push({ id, label });
+    localStorage.setItem('elsushi_categories', JSON.stringify(categories));
+    renderAdminTables();
+    renderCategorySelect();
+    e.target.reset();
+    showToast('Категория кошулду');
+}
+
+function requestDeleteCategory(id) {
+    if (id === 'all') return;
+    const affectedCount = products.filter(p => p.category === id).length;
+    pendingDeleteCatId  = id;
+
+    document.getElementById('deleteCatProductCount').innerText = affectedCount;
+
+    // Калган категорияларды тандоого берүү
+    const otherCats = categories.filter(c => c.id !== id && c.id !== 'all');
+    const select    = document.getElementById('deleteCatTargetSelect');
+    if (otherCats.length === 0) {
+        // Башка категория жок болсо, rolls'ка же биринчи бар катке
+        select.innerHTML = `<option value="rolls">Роллдор (default)</option>`;
+    } else {
+        select.innerHTML = otherCats.map(c => `<option value="${c.id}">${c.label}</option>`).join('');
+    }
+
+    if (affectedCount === 0) {
+        // Байланышкан продукт жок — түз жой
+        confirmDeleteCategory();
+        return;
+    }
+    document.getElementById('deleteCatModal').classList.remove('hidden');
+}
+
+function confirmDeleteCategory() {
+    if (!pendingDeleteCatId) return;
+    const targetId = document.getElementById('deleteCatTargetSelect').value || 'rolls';
+    // Байланышкан продукттарды башка категорияга которуу
+    products = products.map(p => p.category === pendingDeleteCatId ? { ...p, category: targetId } : p);
+    localStorage.setItem('elsushi_products', JSON.stringify(products));
+
+    categories = categories.filter(c => c.id !== pendingDeleteCatId);
+    localStorage.setItem('elsushi_categories', JSON.stringify(categories));
+
+    pendingDeleteCatId = null;
+    document.getElementById('deleteCatModal').classList.add('hidden');
+    renderAdminTables();
+    renderCategorySelect();
+    showToast('Категория өчүрүлдү, товарлар которулду');
+}
+
+// ══════════════════════════════════════════════════
+//  RENDER TABLES
+// ══════════════════════════════════════════════════
+function renderAdminTables() {
+    // Products
+    document.getElementById('adminProductsTable').innerHTML = products.length === 0
+        ? `<tr><td colspan="5" class="p-6 text-center text-gray-500">Товарлар жок</td></tr>`
+        : products.map(p => `
+            <tr class="border-b border-brand-border/40 hover:bg-white/5 transition">
+                <td class="p-3">
+                    <img src="${p.image}" class="w-12 h-12 rounded-lg object-cover"
+                         onerror="this.src='https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?auto=format&fit=crop&w=100&q=60'">
+                </td>
+                <td class="p-3 font-bold text-white">${p.name}
+                    ${p.badge ? `<span class="ml-2 text-[10px] bg-brand-red text-white px-1.5 py-0.5 rounded font-black">${p.badge}</span>` : ''}
+                </td>
+                <td class="p-3 text-xs text-gray-400 uppercase">${getCatLabel(p.category)}</td>
+                <td class="p-3 font-semibold text-brand-red">${p.price} сом</td>
+                <td class="p-3 text-right">
+                    <div class="flex items-center justify-end gap-2">
+                        <button onclick="editProduct(${p.id})" class="text-sky-400 hover:text-sky-300 p-1.5 rounded-lg hover:bg-sky-400/10 transition" title="Редакциялоо">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                        <button onclick="deleteProduct(${p.id})" class="text-red-500 hover:text-red-400 p-1.5 rounded-lg hover:bg-red-500/10 transition" title="Жою">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+
+    // Branches
+    document.getElementById('adminBranchesTable').innerHTML = branches.length === 0
+        ? `<tr><td colspan="4" class="p-6 text-center text-gray-500">Филиалдар жок</td></tr>`
+        : branches.map(b => `
+            <tr class="border-b border-brand-border/40 hover:bg-white/5 transition">
+                <td class="p-3 font-bold text-white">${b.name}</td>
+                <td class="p-3 text-gray-400">${b.address}</td>
+                <td class="p-3">
+                    <a href="https://wa.me/${b.phone}" target="_blank" class="text-green-400 font-semibold hover:underline text-sm">${b.phone}</a>
+                </td>
+                <td class="p-3 text-right">
+                    <div class="flex items-center justify-end gap-2">
+                        <button onclick="editBranch(${b.id})" class="text-sky-400 hover:text-sky-300 p-1.5 rounded-lg hover:bg-sky-400/10 transition" title="Редакциялоо">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                        <button onclick="deleteBranch(${b.id})" class="text-red-500 hover:text-red-400 p-1.5 rounded-lg hover:bg-red-500/10 transition" title="Жою">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+
+    // Categories
+    document.getElementById('adminCategoriesTable').innerHTML = categories.map(c => {
+        const count = products.filter(p => p.category === c.id).length;
+        return `
+            <tr class="border-b border-brand-border/40 hover:bg-white/5 transition">
+                <td class="p-3 font-mono text-xs text-gray-400">${c.id}</td>
+                <td class="p-3 font-bold text-white">${c.label}</td>
+                <td class="p-3 text-sm text-gray-400">${c.id === 'all' ? '—' : count + ' товар'}</td>
+                <td class="p-3 text-right">
+                    ${c.id !== 'all'
+                        ? `<button onclick="requestDeleteCategory('${c.id}')" class="text-red-500 hover:text-red-400 p-1.5 rounded-lg hover:bg-red-500/10 transition" title="Жою">
+                               <i class="fa-solid fa-trash"></i>
+                           </button>`
+                        : '<span class="text-xs text-gray-600">Негизги</span>'
+                    }
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function getCatLabel(id) {
+    const cat = categories.find(c => c.id === id);
+    return cat ? cat.label : id;
+}
+
+function renderCategorySelect() {
+    const select = document.getElementById('newProdCategory');
+    select.innerHTML = categories.filter(c => c.id !== 'all').map(c =>
+        `<option value="${c.id}">${c.label}</option>`
+    ).join('');
+}
+
+// ══════════════════════════════════════════════════
+//  ORDERS TAB
+// ══════════════════════════════════════════════════
+function renderOrdersTab() {
+    const orders = JSON.parse(localStorage.getItem('elsushi_orders')) || [];
+    const container = document.getElementById('ordersContainer');
+
+    if (orders.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-20 text-gray-500">
+                <i class="fa-solid fa-receipt text-5xl mb-4 block opacity-20"></i>
+                <p>Азырынча заказ жок</p>
+            </div>`;
+        return;
+    }
+
+    container.innerHTML = orders.map(o => `
+        <div class="bg-brand-card border border-brand-border rounded-2xl p-5 mb-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                <div>
+                    <span class="text-xs text-gray-500">#${o.id}</span>
+                    <h4 class="font-bold text-white text-base">${o.name} — <span class="text-brand-gold">${o.grandTotal} сом</span></h4>
+                    <p class="text-xs text-gray-400">${o.date} · ${o.branch}</p>
+                </div>
+                <div class="text-xs text-gray-400 space-y-0.5">
+                    <p><i class="fa-solid fa-phone text-brand-red mr-1"></i>${o.phone}</p>
+                    <p><i class="fa-solid fa-location-dot text-brand-red mr-1"></i>${o.address}</p>
+                </div>
+            </div>
+            <div class="border-t border-brand-border/60 pt-3 space-y-1">
+                ${o.items.map(i => `
+                    <div class="flex justify-between text-xs text-gray-300">
+                        <span>${i.name} × ${i.qty}</span>
+                        <span class="text-white font-semibold">${i.price * i.qty} сом</span>
+                    </div>
+                `).join('')}
+                <div class="flex justify-between text-xs text-gray-400 pt-1 border-t border-brand-border/40 mt-1">
+                    <span>Жеткирүү</span>
+                    <span>${o.deliveryFee === 0 ? 'АКЫСЫЗ' : o.deliveryFee + ' сом'}</span>
+                </div>
+            </div>
+            ${o.notes ? `<p class="text-xs text-gray-500 mt-2 italic">💬 ${o.notes}</p>` : ''}
+        </div>
+    `).join('');
+}
+
+function clearAllOrders() {
+    if (!confirm('Бардык заказдар тарыхын тазалайсызбы?')) return;
+    localStorage.removeItem('elsushi_orders');
+    renderOrdersTab();
+    showToast('Заказдар тарыхы тазаланды');
+}
+
+// ══════════════════════════════════════════════════
+//  SETTINGS TAB
+// ══════════════════════════════════════════════════
+function loadSettingsForm() {
+    siteSettings = JSON.parse(localStorage.getItem('elsushi_settings')) || defaultSiteSettings;
+    document.getElementById('setPhone').value     = siteSettings.phone     || '';
+    document.getElementById('setAddress').value   = siteSettings.address   || '';
+    document.getElementById('setWorkHours').value = siteSettings.workHours || '';
+    document.getElementById('setInstagram').value = siteSettings.instagram || '';
+    document.getElementById('setWhatsapp').value  = siteSettings.whatsapp  || '';
+    document.getElementById('setTelegram').value  = siteSettings.telegram  || '';
+}
+
+function saveSettings() {
+    siteSettings = {
+        phone:     document.getElementById('setPhone').value.trim()     || defaultSiteSettings.phone,
+        address:   document.getElementById('setAddress').value.trim()   || defaultSiteSettings.address,
+        workHours: document.getElementById('setWorkHours').value.trim() || defaultSiteSettings.workHours,
+        instagram: document.getElementById('setInstagram').value.trim() || defaultSiteSettings.instagram,
+        whatsapp:  document.getElementById('setWhatsapp').value.replace(/[^0-9]/g, '') || defaultSiteSettings.whatsapp,
+        telegram:  document.getElementById('setTelegram').value.trim()  || defaultSiteSettings.telegram,
+    };
+    localStorage.setItem('elsushi_settings', JSON.stringify(siteSettings));
+    showToast('Жөндөөлөр сакталды! Сайтты жаңылаңыз.');
+    updateSiteInfo();
+}
+
+function updateSiteInfo() {
+    const orders = JSON.parse(localStorage.getItem('elsushi_orders')) || [];
+    document.getElementById('infoProducts').innerText   = products.length;
+    document.getElementById('infoBranches').innerText   = branches.length;
+    document.getElementById('infoCategories').innerText = categories.length;
+    document.getElementById('infoOrders').innerText     = orders.length;
+
+    // localStorage өлчөмүн болжолдоп эсептөө
+    let totalBytes = 0;
+    for (let key in localStorage) {
+        if (localStorage.hasOwnProperty(key) && key.startsWith('elsushi')) {
+            totalBytes += (localStorage.getItem(key) || '').length * 2;
+        }
+    }
+    const kb = (totalBytes / 1024).toFixed(1);
+    const maxKb = 5120;
+    document.getElementById('infoStorage').innerText = `${kb} KB / ${maxKb} KB`;
+}
+
+function handleResetData() {
+    if (!confirm('ЭСКЕРТҮҮ: Бардык маалыматтар (товарлар, филиалдар, категориялар, жөндөөлөр) баштапкы абалга кайтарылат. Улантасызбы?')) return;
+    ['elsushi_categories','elsushi_branches','elsushi_products','elsushi_settings','elsushi_cart','elsushi_orders'].forEach(k => localStorage.removeItem(k));
+    categories   = defaultCategories;
+    branches     = defaultBranches;
+    products     = defaultProducts;
+    siteSettings = defaultSiteSettings;
+    localStorage.setItem('elsushi_categories', JSON.stringify(categories));
+    localStorage.setItem('elsushi_branches',   JSON.stringify(branches));
+    localStorage.setItem('elsushi_products',   JSON.stringify(products));
+    localStorage.setItem('elsushi_settings',   JSON.stringify(siteSettings));
+    renderAdminTables();
+    renderCategorySelect();
+    loadSettingsForm();
+    updateSiteInfo();
+    showToast('Маалыматтар баштапкы абалга кайтарылды');
+}
+
+// ══════════════════════════════════════════════════
+//  TOAST
+// ══════════════════════════════════════════════════
+function togglePassVis(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const icon  = btn.querySelector('i');
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+}
+
+function showToast(msg, type = 'success') {
+    const toast = document.getElementById('toast');
+    const icon  = toast.querySelector('i');
+    document.getElementById('toastMsg').innerText = msg;
+    toast.className = toast.className.replace(/bg-\S+/, '');
+    if (type === 'error') {
+        toast.classList.add('bg-red-600');
+        icon.className = 'fa-solid fa-circle-xmark text-xl';
+    } else {
+        toast.classList.add('bg-brand-red');
+        icon.className = 'fa-solid fa-circle-check text-xl';
+    }
+    toast.classList.remove('translate-y-20', 'opacity-0');
+    setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 3000);
+}
+</script>
+</body>
+</html>
