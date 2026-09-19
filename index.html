@@ -344,6 +344,56 @@
         </div>
     </div>
 
+    <!-- PRODUCT DETAIL MODAL -->
+    <div id="productModal" class="fixed inset-0 z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-sm"
+         onclick="closeProductModal(event)">
+        <div id="productModalBox"
+             class="bg-brand-card border border-brand-border w-full sm:max-w-lg rounded-t-3xl sm:rounded-2xl overflow-hidden shadow-2xl relative flex flex-col max-h-[92vh]">
+
+            <!-- Сүрөт -->
+            <div class="relative w-full h-52 sm:h-64 shrink-0 overflow-hidden">
+                <img id="pmImage" src="" alt="" class="w-full h-full object-cover">
+                <!-- Жабуу баскычы -->
+                <button onclick="closeProductModal()"
+                    class="absolute top-3 right-3 w-9 h-9 bg-black/60 hover:bg-black/80 text-white rounded-full flex items-center justify-center transition backdrop-blur-sm">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <!-- Badge -->
+                <span id="pmBadge" class="absolute top-3 left-3 bg-brand-red text-white text-xs font-black uppercase px-2.5 py-1 rounded-md shadow hidden"></span>
+            </div>
+
+            <!-- Маалымат -->
+            <div class="flex-1 overflow-y-auto p-5 space-y-3">
+                <h2 id="pmName" class="text-xl font-extrabold text-white leading-tight"></h2>
+                <div class="flex items-center gap-3 flex-wrap">
+                    <span id="pmWeight" class="text-xs text-gray-400 bg-brand-bg px-3 py-1 rounded-full border border-brand-border"></span>
+                    <span id="pmPrice" class="text-2xl font-black text-brand-red"></span>
+                </div>
+                <p id="pmDesc" class="text-sm text-gray-300 leading-relaxed"></p>
+
+                <!-- Подсказка -->
+                <div class="bg-brand-bg/60 border border-brand-border rounded-xl p-3 flex items-start gap-3">
+                    <i class="fa-solid fa-circle-info text-brand-gold mt-0.5 shrink-0"></i>
+                    <p id="pmHint" class="text-xs text-gray-400 leading-relaxed"></p>
+                </div>
+            </div>
+
+            <!-- Баскычтар -->
+            <div class="p-4 border-t border-brand-border bg-brand-bg/50 flex gap-3">
+                <div class="flex items-center gap-2 bg-brand-card border border-brand-border rounded-xl px-3">
+                    <button onclick="pmChangeQty(-1)" class="text-gray-400 hover:text-white text-lg w-8 h-10 flex items-center justify-center">−</button>
+                    <span id="pmQty" class="text-white font-bold text-base w-5 text-center">1</span>
+                    <button onclick="pmChangeQty(1)"  class="text-gray-400 hover:text-white text-lg w-8 h-10 flex items-center justify-center">+</button>
+                </div>
+                <button onclick="pmAddToCart()"
+                    class="flex-1 bg-brand-red hover:bg-brand-darkred active:scale-95 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2 text-sm">
+                    <i class="fa-solid fa-basket-shopping"></i>
+                    <span id="pmAddBtn"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- TOAST -->
     <div id="toast" class="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:bottom-6 sm:max-w-xs z-50 bg-brand-red text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 translate-y-20 opacity-0 transition-all duration-300">
         <i class="fa-solid fa-circle-check text-xl shrink-0"></i>
@@ -422,6 +472,9 @@
             checkout_notes_placeholder:'Васаби, имбирь на сколько человек...',
             checkout_submit_btn:      'Отправить заказ в WhatsApp',
             order_sent_toast:         'Заказ отправлен в WhatsApp!',
+            // Product modal
+            product_modal_hint:       '💡 Добавьте в корзину, затем нажмите кнопку «Корзина» вверху → выберите филиал → оформите заказ через WhatsApp.',
+            modal_add_btn:            'Добавить в корзину',
             // WhatsApp message
             wa_header:                '🍣 *ЭЛ СУШИ — НОВЫЙ ЗАКАЗ* 🍣\n\n',
             wa_branch:                '🏢 *Филиал:* ',
@@ -503,6 +556,9 @@
             checkout_notes_placeholder:'Васаби, имбирь канча кишиге...',
             checkout_submit_btn:      'WhatsApp\'ка Заказды жөнөтүү',
             order_sent_toast:         'Заказ WhatsApp\'ка жөнөтүлдү!',
+            // Product modal
+            product_modal_hint:       '💡 Корзинага кошуп, жогору жактагы «Себет» баскычын басыңыз → филиалды тандаңыз → WhatsApp аркылуу заказ бериңиз.',
+            modal_add_btn:            'Себетке кошуу',
             // WhatsApp message
             wa_header:                '🍣 *ЭЛ СУШИ — ЖАҢЫ ЗАКАЗ* 🍣\n\n',
             wa_branch:                '🏢 *Тандалган Филиал:* ',
@@ -693,7 +749,8 @@
         }
         container.innerHTML = list.map(p => `
             <div class="product-card bg-brand-card border border-brand-border rounded-2xl overflow-hidden relative group
-                        flex flex-row sm:flex-col">
+                        flex flex-row sm:flex-col cursor-pointer"
+                 onclick="openProductModal(${p.id})">
                 ${p.badge ? `<span class="absolute top-2 left-2 z-10 bg-brand-red text-white text-[10px] font-black uppercase px-2 py-0.5 rounded shadow">${p.badge}</span>` : ''}
 
                 <!-- Сүрөт: мобилде солго квадрат, sm+ де жогору толук туура -->
@@ -711,7 +768,7 @@
                     </div>
                     <div class="flex items-center justify-between gap-2 mt-2 sm:mt-4">
                         <span class="text-base sm:text-xl font-extrabold text-white whitespace-nowrap">${p.price}${t('wa_currency')}</span>
-                        <button onclick="addToCart(${p.id})"
+                        <button onclick="event.stopPropagation(); openProductModal(${p.id})"
                             class="bg-brand-red hover:bg-brand-darkred active:bg-brand-darkred text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-1.5 transition shrink-0">
                             <i class="fa-solid fa-plus text-xs"></i>
                             <span>${t('menu_add_btn')}</span>
@@ -942,6 +999,94 @@
         renderProducts(products.filter(p =>
             p.name.toLowerCase().includes(q) || (p.desc || '').toLowerCase().includes(q)
         ));
+    }
+
+    // ════════════════════════════════════════════════════
+    //  PRODUCT DETAIL MODAL
+    // ════════════════════════════════════════════════════
+    let pmCurrentId  = null;
+    let pmCurrentQty = 1;
+
+    function openProductModal(id) {
+        const p = products.find(p => p.id === id);
+        if (!p) return;
+        pmCurrentId  = id;
+        pmCurrentQty = 1;
+
+        document.getElementById('pmImage').src      = p.image || '';
+        document.getElementById('pmImage').alt      = p.name;
+        document.getElementById('pmName').textContent  = p.name;
+        document.getElementById('pmWeight').textContent = p.weight || '';
+        document.getElementById('pmDesc').textContent   = p.desc  || '';
+        document.getElementById('pmQty').textContent    = 1;
+
+        const curr = t('wa_currency');
+        document.getElementById('pmPrice').textContent = p.price + curr;
+
+        // Badge
+        const badge = document.getElementById('pmBadge');
+        if (p.badge) {
+            badge.textContent = p.badge;
+            badge.classList.remove('hidden');
+        } else {
+            badge.classList.add('hidden');
+        }
+
+        // Подсказка — тилге жараша
+        document.getElementById('pmHint').textContent = t('product_modal_hint');
+        document.getElementById('pmAddBtn').textContent = t('modal_add_btn');
+
+        // Жалпы баа жаңылоо
+        pmUpdateTotal(p.price);
+
+        document.getElementById('productModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeProductModal(e) {
+        // Фонго баскандан жабылат, же жабуу баскычынан
+        if (e && e.target !== document.getElementById('productModal')) return;
+        document.getElementById('productModal').classList.add('hidden');
+        document.body.style.overflow = '';
+        pmCurrentId  = null;
+        pmCurrentQty = 1;
+    }
+
+    function pmChangeQty(delta) {
+        pmCurrentQty = Math.max(1, pmCurrentQty + delta);
+        document.getElementById('pmQty').textContent = pmCurrentQty;
+        const p = products.find(p => p.id === pmCurrentId);
+        if (p) pmUpdateTotal(p.price);
+    }
+
+    function pmUpdateTotal(price) {
+        const curr = t('wa_currency');
+        const total = price * pmCurrentQty;
+        document.getElementById('pmPrice').textContent = total + curr;
+        const label = pmCurrentQty > 1
+            ? `${t('modal_add_btn')} (${pmCurrentQty} шт)`
+            : t('modal_add_btn');
+        document.getElementById('pmAddBtn').textContent = label;
+    }
+
+    function pmAddToCart() {
+        if (!pmCurrentId) return;
+        const item = products.find(p => p.id === pmCurrentId);
+        if (!item) return;
+
+        const exist = cart.find(c => c.id === pmCurrentId);
+        if (exist) { exist.qty += pmCurrentQty; }
+        else { cart.push({ ...item, qty: pmCurrentQty }); }
+
+        saveCart();
+        updateCartUI();
+        showToast(t('cart_added_toast', item.name));
+
+        // Модалды жаб
+        document.getElementById('productModal').classList.add('hidden');
+        document.body.style.overflow = '';
+        pmCurrentId  = null;
+        pmCurrentQty = 1;
     }
     </script>
 </body>
