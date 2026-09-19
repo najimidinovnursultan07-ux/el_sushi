@@ -36,7 +36,10 @@
         .glass-header { background:rgba(15,16,21,0.85); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
         .glow-red { box-shadow:0 0 25px rgba(255,46,85,0.35); }
         .product-card { transition:all 0.3s cubic-bezier(0.4,0,0.2,1); }
-        .product-card:hover { transform:translateY(-6px); box-shadow:0 12px 30px rgba(0,0,0,0.5),0 0 15px rgba(255,46,85,0.2); }
+        /* Мобилде hover жок — телефондо тийишинен */
+        @media (hover: hover) {
+            .product-card:hover { transform:translateY(-4px); box-shadow:0 12px 30px rgba(0,0,0,0.5),0 0 15px rgba(255,46,85,0.2); }
+        }
         .no-scrollbar::-webkit-scrollbar { display:none; }
         .no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
         .logo-fallback { display:flex; align-items:center; gap:10px; }
@@ -49,15 +52,15 @@
         .lang-btn:not(.active) { background:transparent; color:#9CA3AF; border-color:#2A2D3A; }
         .lang-btn:not(.active):hover { color:white; border-color:#9CA3AF; }
         /* Hero blur overflow fix */
-        .hero-glow { position:absolute; inset:-4px; background:linear-gradient(to right,#FF2E55,#f97316); border-radius:1.5rem; filter:blur(40px); opacity:0.2; animation:pulse 2s infinite; pointer-events:none; }
-        @keyframes pulse { 0%,100%{opacity:.2} 50%{opacity:.35} }
-        /* Карточка сүрөт биркелки */
-        .product-card img { width:100%; height:192px; object-fit:cover; display:block; }
-        /* Мобил header жыйноо */
+        .hero-glow { position:absolute; inset:0; background:linear-gradient(to right,#FF2E55,#f97316); border-radius:1.5rem; filter:blur(32px); opacity:0.18; animation:heroP 2s infinite; pointer-events:none; }
+        @keyframes heroP { 0%,100%{opacity:.18} 50%{opacity:.28} }
+        /* Мобилде карточка сүрөтүнүн бийиктиги авто */
         @media (max-width: 639px) {
-            .header-logo img { height: 40px; }
-            .logo-fallback .logo-icon { width:36px; height:36px; font-size:18px; }
-            .logo-fallback .logo-text-main { font-size:18px; }
+            .product-card { min-height: 110px; }
+            .product-card img { height: 110px !important; width: 120px !important; border-radius: 0.75rem 0 0 0.75rem; }
+            .header-logo img { height: 38px !important; }
+            .logo-fallback .logo-icon { width:34px; height:34px; font-size:17px; }
+            .logo-fallback .logo-text-main { font-size:17px; }
         }
     </style>
 </head>
@@ -180,7 +183,7 @@
             </div>
             <div class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar w-full sm:w-auto" id="categoryContainer"></div>
         </div>
-        <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6"></div>
+        <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-5"></div>
     </section>
 
     <!-- BRANCHES DISPLAY -->
@@ -689,23 +692,31 @@
             return;
         }
         container.innerHTML = list.map(p => `
-            <div class="product-card bg-brand-card border border-brand-border rounded-2xl overflow-hidden flex flex-col justify-between relative group">
-                ${p.badge ? `<span class="absolute top-3 left-3 z-10 bg-brand-red text-white text-[10px] font-black uppercase px-2.5 py-1 rounded-md shadow">${p.badge}</span>` : ''}
-                <div>
-                    <img src="${p.image}" alt="${p.name}" class="w-full h-48 object-cover"
-                         onerror="this.src='https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?auto=format&fit=crop&w=600&q=80'">
-                    <div class="p-5">
-                        <h3 class="font-bold text-white text-lg">${p.name}</h3>
-                        <p class="text-xs text-gray-400 mb-2">${p.weight || ''}</p>
-                        <p class="text-xs text-gray-400 line-clamp-2 mb-4">${p.desc || ''}</p>
+            <div class="product-card bg-brand-card border border-brand-border rounded-2xl overflow-hidden relative group
+                        flex flex-row sm:flex-col">
+                ${p.badge ? `<span class="absolute top-2 left-2 z-10 bg-brand-red text-white text-[10px] font-black uppercase px-2 py-0.5 rounded shadow">${p.badge}</span>` : ''}
+
+                <!-- Сүрөт: мобилде солго квадрат, sm+ де жогору толук туура -->
+                <img src="${p.image}" alt="${p.name}"
+                     class="w-[120px] h-full sm:w-full sm:h-44 object-cover shrink-0
+                            rounded-l-2xl sm:rounded-t-2xl sm:rounded-bl-none"
+                     onerror="this.src='https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?auto=format&fit=crop&w=600&q=80'">
+
+                <!-- Маалымат: мобилде оңго, sm+ де ылдыга -->
+                <div class="flex flex-col justify-between flex-1 p-3 sm:p-5 min-w-0">
+                    <div>
+                        <h3 class="font-bold text-white text-sm sm:text-base leading-tight line-clamp-2">${p.name}</h3>
+                        <p class="text-[11px] sm:text-xs text-gray-500 mt-0.5 mb-1">${p.weight || ''}</p>
+                        <p class="text-[11px] sm:text-xs text-gray-400 line-clamp-2 hidden sm:block">${p.desc || ''}</p>
                     </div>
-                </div>
-                <div class="px-5 pb-5 pt-0 flex items-center justify-between mt-auto">
-                    <span class="text-xl font-extrabold text-white">${p.price}${t('wa_currency')}</span>
-                    <button onclick="addToCart(${p.id})"
-                        class="bg-brand-red hover:bg-brand-darkred text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 transition">
-                        <i class="fa-solid fa-plus"></i> ${t('menu_add_btn')}
-                    </button>
+                    <div class="flex items-center justify-between gap-2 mt-2 sm:mt-4">
+                        <span class="text-base sm:text-xl font-extrabold text-white whitespace-nowrap">${p.price}${t('wa_currency')}</span>
+                        <button onclick="addToCart(${p.id})"
+                            class="bg-brand-red hover:bg-brand-darkred text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-1 transition shrink-0">
+                            <i class="fa-solid fa-plus text-xs"></i>
+                            <span class="hidden xs:inline sm:inline">${t('menu_add_btn')}</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         `).join('');
