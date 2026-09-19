@@ -712,9 +712,9 @@
                     <div class="flex items-center justify-between gap-2 mt-2 sm:mt-4">
                         <span class="text-base sm:text-xl font-extrabold text-white whitespace-nowrap">${p.price}${t('wa_currency')}</span>
                         <button onclick="addToCart(${p.id})"
-                            class="bg-brand-red hover:bg-brand-darkred text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-1 transition shrink-0">
+                            class="bg-brand-red hover:bg-brand-darkred active:bg-brand-darkred text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-1.5 transition shrink-0">
                             <i class="fa-solid fa-plus text-xs"></i>
-                            <span class="hidden xs:inline sm:inline">${t('menu_add_btn')}</span>
+                            <span>${t('menu_add_btn')}</span>
                         </button>
                     </div>
                 </div>

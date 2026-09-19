@@ -454,20 +454,18 @@ let pendingDeleteCatId  = null;
 
 // ══════════════════════════════════════════════════
 //  СЫРСӨЗ ЛОГИКАСЫ — туруктуу, өзгөртүүгө болбойт
+//  Сырсөз: el_sushi_kg
 // ══════════════════════════════════════════════════
-const ADMIN_HASH = '6c0eb5f82b8d0967d6a3efb889f23decd4387613acc46d187a57e8e54bdb3fbf';
+const ADMIN_PASS = atob('ZWxfc3VzaGlfa2c='); // el_sushi_kg
 
-async function sha256(str) {
-    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
-}
+// Эски сырсөз системасынын калдыктарын тазалоо
+localStorage.removeItem('elsushi_admin_hash');
 
-async function handleLogin(e) {
+function handleLogin(e) {
     e.preventDefault();
     const pass  = document.getElementById('adminPasswordInput').value;
     const errEl = document.getElementById('loginError');
-    const hash  = await sha256(pass);
-    if (hash === ADMIN_HASH) {
+    if (pass === ADMIN_PASS) {
         errEl.classList.add('hidden');
         document.getElementById('loginModal').classList.add('hidden');
         document.getElementById('adminContent').classList.remove('hidden');
@@ -484,7 +482,6 @@ function handleLogout() {
     document.getElementById('loginModal').classList.remove('hidden');
     document.getElementById('adminPasswordInput').value = '';
     document.getElementById('loginError').classList.add('hidden');
-}
 }
 
 // ══════════════════════════════════════════════════
