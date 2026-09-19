@@ -181,7 +181,17 @@
                 <h2 data-i18n="menu_title" class="text-2xl sm:text-3xl font-extrabold text-white"></h2>
                 <p data-i18n="menu_subtitle" class="text-gray-400 text-sm mt-1"></p>
             </div>
-            <div class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar w-full sm:w-auto" id="categoryContainer"></div>
+            <!-- Мобилде select, sm+ де баскычтар -->
+            <div class="w-full sm:w-auto">
+                <!-- Мобил select -->
+                <select id="categorySelect"
+                    onchange="filterCategory(this.value)"
+                    class="sm:hidden w-full bg-brand-card border border-brand-border text-white text-sm font-semibold rounded-xl px-4 py-2.5 focus:outline-none focus:border-brand-red appearance-none cursor-pointer"
+                    style="background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24'%3E%3Cpath stroke='%239CA3AF' stroke-width='2' d='M6 9l6 6 6-6'/%3E%3C/svg%3E\"); background-repeat:no-repeat; background-position:right 12px center; background-size:18px; padding-right:36px;">
+                </select>
+                <!-- Десктоп баскычтар -->
+                <div class="hidden sm:flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar" id="categoryContainer"></div>
+            </div>
         </div>
         <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-5"></div>
     </section>
@@ -656,21 +666,63 @@
     //  DEFAULT МААЛЫМАТТАР
     // ════════════════════════════════════════════════════
     const defaultCategories = [
-        { id: 'all', label_ru: 'Все', label_ky: 'Бардыгы' },
-        { id: 'rolls',   label_ru: 'Роллы',    label_ky: 'Роллдор' },
-        { id: 'sets',    label_ru: 'Сеты',     label_ky: 'Сеттер' },
-        { id: 'tempura', label_ru: 'Темпура',  label_ky: 'Темпура' },
-        { id: 'sushi',   label_ru: 'Суши',     label_ky: 'Суши' },
-        { id: 'drinks',  label_ru: 'Напитки',  label_ky: 'Суусундуктар' }
+        { id: 'all',      label_ru: 'Все',        label_ky: 'Бардыгы' },
+        { id: 'rolls',    label_ru: 'Роллы',      label_ky: 'Роллдор' },
+        { id: 'sets',     label_ru: 'Сеты',       label_ky: 'Сеттер' },
+        { id: 'tempura',  label_ru: 'Темпура',    label_ky: 'Темпура' },
+        { id: 'sushi',    label_ru: 'Суши',       label_ky: 'Суши' },
+        { id: 'shawarma', label_ru: 'Шаурма',     label_ky: 'Шаурма' },
+        { id: 'sauces',   label_ru: 'Соусы',      label_ky: 'Соустар' },
+        { id: 'snacks',   label_ru: 'Снеки',      label_ky: 'Снектер' },
+        { id: 'drinks',   label_ru: 'Напитки',    label_ky: 'Суусундуктар' }
     ];
     const defaultBranches = [
         { id: 1, name: 'Эл суши - Бишкек Центр', address: 'Манас проспектиси 40', phone: '996555001122' },
         { id: 2, name: 'Эл суши - Түштүк',       address: '7-Кичи район 12/2',    phone: '996700001122' }
     ];
     const defaultProducts = [
-        { id: 1, name: 'Филадельфия Классик', category: 'rolls', price: 520, weight: '280г (8 шт)', desc: 'Лосось, каймак сыры (филадельфия), бадыраң, суши күрүчү.', image: 'https://images.unsplash.com/photo-1611143669185-af224c5e3252?auto=format&fit=crop&w=600&q=80', badge: 'Хит' },
-        { id: 2, name: 'Калифорния Уграсы',  category: 'rolls', price: 480, weight: '260г (8 шт)', desc: 'Угра (угорь), авокадо, масаго икрасы, унаги соусу.',       image: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=600&q=80' },
-        { id: 3, name: 'Запеченный Сет VIP', category: 'sets',  price: 1850, weight: '1200г (32 шт)', desc: 'Запеченная Филадельфия, Запеченный сыр ролл, Тобико Сет.', image: 'https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?auto=format&fit=crop&w=600&q=80', badge: 'Топ' }
+        // ── Роллдор ──
+        { id: 1,  name: 'Филадельфия Классик', category: 'rolls',    price: 520,  weight: '280г (8 шт)',   desc: 'Лосось, каймак сыры (филадельфия), бадыраң, суши күрүчү.', image: 'https://images.unsplash.com/photo-1611143669185-af224c5e3252?auto=format&fit=crop&w=600&q=80', badge: 'Хит' },
+        { id: 2,  name: 'Калифорния Уграсы',   category: 'rolls',    price: 480,  weight: '260г (8 шт)',   desc: 'Угра (угорь), авокадо, масаго икрасы, унаги соусу.',       image: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=600&q=80' },
+        { id: 3,  name: 'Запеченный Сет VIP',  category: 'sets',     price: 1850, weight: '1200г (32 шт)', desc: 'Запеченная Филадельфия, Запеченный сыр ролл, Тобико Сет.', image: 'https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?auto=format&fit=crop&w=600&q=80', badge: 'Топ' },
+        // ── Шаурма ──
+        { id: 10, name: 'Шаурма классика',     category: 'shawarma', price: 200,  image: '' },
+        { id: 11, name: 'Шаурма мини',         category: 'shawarma', price: 160,  image: '' },
+        // ── Снеки ──
+        { id: 20, name: 'Наггетсы 15 шт',      category: 'snacks',   price: 300,  image: '' },
+        { id: 21, name: 'Наггетсы 10 шт',      category: 'snacks',   price: 200,  image: '' },
+        { id: 22, name: 'Крылышки 25 шт',      category: 'snacks',   price: 1500, image: '' },
+        { id: 23, name: 'Крылышки 20 шт',      category: 'snacks',   price: 1200, image: '' },
+        { id: 24, name: 'Крылышки 15 шт',      category: 'snacks',   price: 900,  image: '' },
+        { id: 25, name: 'Крылышки 10 шт',      category: 'snacks',   price: 600,  image: '' },
+        { id: 26, name: 'Крылышки 5 шт',       category: 'snacks',   price: 300,  image: '' },
+        { id: 27, name: 'Фри большой',         category: 'snacks',   price: 250,  image: '' },
+        // ── Соустар ──
+        { id: 30, name: 'Кетчуп',              category: 'sauces',   price: 30,   image: '' },
+        { id: 31, name: 'Сырный соус',         category: 'sauces',   price: 30,   image: '' },
+        { id: 32, name: 'Чесночный соус',      category: 'sauces',   price: 30,   image: '' },
+        // ── Суусундуктар ──
+        { id: 40, name: 'Кока-Кола 2л',        category: 'drinks',   price: 200,  image: '' },
+        { id: 41, name: 'Кока-Кола 1.5л',      category: 'drinks',   price: 150,  image: '' },
+        { id: 42, name: 'Кока-Кола 1л',        category: 'drinks',   price: 100,  image: '' },
+        { id: 43, name: 'Кока-Кола 0.5л',      category: 'drinks',   price: 70,   image: '' },
+        { id: 44, name: 'Фанта 2л',            category: 'drinks',   price: 200,  image: '' },
+        { id: 45, name: 'Фанта 1.5л',          category: 'drinks',   price: 150,  image: '' },
+        { id: 46, name: 'Фанта 1л',            category: 'drinks',   price: 100,  image: '' },
+        { id: 47, name: 'Фанта 0.5л',          category: 'drinks',   price: 70,   image: '' },
+        { id: 48, name: 'Пепси 1л',            category: 'drinks',   price: 130,  image: '' },
+        { id: 49, name: 'Пепси 0.5л',          category: 'drinks',   price: 60,   image: '' },
+        { id: 50, name: 'Ава 1л',              category: 'drinks',   price: 100,  image: '' },
+        { id: 51, name: 'Салам Кола 1л',       category: 'drinks',   price: 100,  image: '' },
+        { id: 52, name: 'Да-Да 1л',            category: 'drinks',   price: 120,  image: '' },
+        { id: 53, name: 'Да-Да 0.5л',         category: 'drinks',   price: 75,   image: '' },
+        { id: 54, name: 'Пиала 1л',            category: 'drinks',   price: 100,  image: '' },
+        { id: 55, name: 'Фьюсти 1л',           category: 'drinks',   price: 100,  image: '' },
+        { id: 56, name: 'Пико 1л',             category: 'drinks',   price: 130,  image: '' },
+        { id: 57, name: 'Асу 1л',              category: 'drinks',   price: 75,   image: '' },
+        { id: 58, name: 'Асу 0.5л',            category: 'drinks',   price: 65,   image: '' },
+        { id: 59, name: 'Нектар Солнечный 1л', category: 'drinks',   price: 130,  image: '' },
+        { id: 60, name: 'Нектар Солнечный 0.5л', category: 'drinks', price: 65,   image: '' },
     ];
     const defaultSiteSettings = {
         phone: '+996 (555) 00-11-22',
@@ -750,17 +802,30 @@
     //  КАТЕГОРИЯЛАР
     // ════════════════════════════════════════════════════
     function renderCategories() {
+        const label = getCatLabel(categories.find(c => c.id === activeCategory) || categories[0]);
+
+        // Мобил select
+        const sel = document.getElementById('categorySelect');
+        if (sel) {
+            sel.innerHTML = categories.map(cat =>
+                `<option value="${cat.id}" ${cat.id === activeCategory ? 'selected' : ''}>${getCatLabel(cat)}</option>`
+            ).join('');
+        }
+
+        // Десктоп баскычтар
         const container = document.getElementById('categoryContainer');
-        container.innerHTML = categories.map(cat => `
-            <button onclick="filterCategory('${cat.id}')"
-                class="px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200 ${
-                    activeCategory === cat.id
-                    ? 'bg-brand-red text-white glow-red'
-                    : 'bg-brand-card text-gray-400 hover:text-white border border-brand-border'
-                }">
-                ${getCatLabel(cat)}
-            </button>
-        `).join('');
+        if (container) {
+            container.innerHTML = categories.map(cat => `
+                <button onclick="filterCategory('${cat.id}')"
+                    class="px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200 ${
+                        activeCategory === cat.id
+                        ? 'bg-brand-red text-white glow-red'
+                        : 'bg-brand-card text-gray-400 hover:text-white border border-brand-border'
+                    }">
+                    ${getCatLabel(cat)}
+                </button>
+            `).join('');
+        }
     }
 
     function filterCategory(catId) {
@@ -791,8 +856,13 @@
                 <!-- Сүрөт: мобилде солго квадрат, sm+ де жогору толук туура -->
                 <img src="${p.image}" alt="${p.name}"
                      class="w-[120px] h-full sm:w-full sm:h-44 object-cover shrink-0
-                            rounded-l-2xl sm:rounded-t-2xl sm:rounded-bl-none"
-                     onerror="this.src='https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?auto=format&fit=crop&w=600&q=80'">
+                            rounded-l-2xl sm:rounded-t-2xl sm:rounded-bl-none${p.image ? '' : ' hidden'}"
+                     onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');">
+                <!-- Сүрөтсүз placeholder -->
+                <div class="w-[120px] shrink-0 sm:w-full sm:h-44 bg-brand-bg flex items-center justify-center
+                            rounded-l-2xl sm:rounded-t-2xl sm:rounded-bl-none${p.image ? ' hidden' : ''}">
+                    <i class="fa-solid fa-bowl-food text-3xl text-brand-border"></i>
+                </div>
 
                 <!-- Маалымат: мобилде оңго, sm+ де ылдыга -->
                 <div class="flex flex-col justify-between flex-1 p-3 sm:p-5 min-w-0">
@@ -1108,8 +1178,15 @@
         pmCurrentId  = id;
         pmCurrentQty = 1;
 
-        document.getElementById('pmImage').src      = p.image || '';
-        document.getElementById('pmImage').alt      = p.name;
+        document.getElementById('pmImage').src = p.image || '';
+        document.getElementById('pmImage').alt = p.name;
+        // Сүрөт жок болсо сүрөт блогун жашыр
+        const imgWrap = document.getElementById('pmImage').parentElement;
+        if (!p.image) {
+            imgWrap.classList.add('hidden');
+        } else {
+            imgWrap.classList.remove('hidden');
+        }
         document.getElementById('pmName').textContent  = p.name;
         document.getElementById('pmWeight').textContent = p.weight || '';
         document.getElementById('pmDesc').textContent   = p.desc  || '';
