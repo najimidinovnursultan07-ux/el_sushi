@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ky">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,58 +14,38 @@
                 extend: {
                     colors: {
                         brand: {
-                            red: '#FF2E55',
-                            darkred: '#D91B40',
-                            gold: '#FFB800',
-                            bg: '#0F1015',
-                            card: '#181A22',
-                            border: '#2A2D3A'
+                            red: '#FF2E55', darkred: '#D91B40',
+                            gold: '#FFB800', bg: '#0F1015',
+                            card: '#181A22', border: '#2A2D3A'
                         }
                     },
-                    fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
-                    }
+                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] }
                 }
             }
         }
     </script>
 
     <style>
-        body {
-            background-color: #0F1015;
-            color: #E2E8F0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            overflow-x: hidden;
-        }
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0F1015; }
-        ::-webkit-scrollbar-thumb { background: #2A2D3A; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #FF2E55; }
-        .glass-header {
-            background: rgba(15, 16, 21, 0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-        }
-        .glow-red { box-shadow: 0 0 25px rgba(255, 46, 85, 0.35); }
-        .product-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .product-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 46, 85, 0.2);
-        }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        /* Fallback logo style */
-        .logo-fallback {
-            display: flex; align-items: center; gap: 10px;
-        }
-        .logo-fallback .logo-icon {
-            width: 44px; height: 44px; background: linear-gradient(135deg,#FF2E55,#D91B40);
-            border-radius: 12px; display: flex; align-items: center; justify-content: center;
-            font-size: 22px; color: white; font-weight: 900; flex-shrink: 0;
-            box-shadow: 0 0 20px rgba(255,46,85,0.4);
-        }
-        .logo-fallback .logo-text-main { font-size: 22px; font-weight: 900; color: white; line-height: 1; letter-spacing: 2px; }
-        .logo-fallback .logo-text-sub { font-size: 9px; color: #FF2E55; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; }
+        body { background-color:#0F1015; color:#E2E8F0; font-family:'Plus Jakarta Sans',sans-serif; overflow-x:hidden; }
+        ::-webkit-scrollbar { width:8px; }
+        ::-webkit-scrollbar-track { background:#0F1015; }
+        ::-webkit-scrollbar-thumb { background:#2A2D3A; border-radius:4px; }
+        ::-webkit-scrollbar-thumb:hover { background:#FF2E55; }
+        .glass-header { background:rgba(15,16,21,0.85); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
+        .glow-red { box-shadow:0 0 25px rgba(255,46,85,0.35); }
+        .product-card { transition:all 0.3s cubic-bezier(0.4,0,0.2,1); }
+        .product-card:hover { transform:translateY(-6px); box-shadow:0 12px 30px rgba(0,0,0,0.5),0 0 15px rgba(255,46,85,0.2); }
+        .no-scrollbar::-webkit-scrollbar { display:none; }
+        .no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
+        .logo-fallback { display:flex; align-items:center; gap:10px; }
+        .logo-fallback .logo-icon { width:44px; height:44px; background:linear-gradient(135deg,#FF2E55,#D91B40); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:22px; color:white; font-weight:900; flex-shrink:0; box-shadow:0 0 20px rgba(255,46,85,0.4); }
+        .logo-fallback .logo-text-main { font-size:22px; font-weight:900; color:white; line-height:1; letter-spacing:2px; }
+        .logo-fallback .logo-text-sub { font-size:9px; color:#FF2E55; font-weight:700; letter-spacing:4px; text-transform:uppercase; }
+        /* Тил баскычы */
+        .lang-btn { transition:all 0.2s; }
+        .lang-btn.active { background:#FF2E55; color:white; border-color:#FF2E55; }
+        .lang-btn:not(.active) { background:transparent; color:#9CA3AF; border-color:#2A2D3A; }
+        .lang-btn:not(.active):hover { color:white; border-color:#9CA3AF; }
     </style>
 </head>
 <body class="bg-brand-bg min-h-screen flex flex-col justify-between">
@@ -73,13 +53,14 @@
     <!-- ANNOUNCEMENT BAR -->
     <div class="bg-gradient-to-r from-brand-red via-purple-600 to-brand-red text-white text-xs md:text-sm py-2 px-4 text-center font-medium tracking-wide flex justify-between items-center">
         <div class="hidden md:flex items-center gap-2">
-            <i class="fa-solid fa-clock"></i> <span id="headerWorkHours">Иштөө убактысы: 10:00 - 02:00</span>
+            <i class="fa-solid fa-clock"></i>
+            <span id="headerWorkHours"></span>
         </div>
         <div class="mx-auto md:mx-0">
-            🔥 <b>АКЦИЯ:</b> 2500 сомдон жогору заказга Акысыз жеткирүү!
+            🔥 <b data-i18n="promo_label">АКЦИЯ:</b> <span data-i18n="promo_text"></span>
         </div>
         <div id="topBranchInfo" class="hidden md:flex items-center gap-2 font-semibold text-brand-gold">
-            <i class="fa-solid fa-store"></i> <span id="activeBranchCount">0 филиал иштеп жатат</span>
+            <i class="fa-solid fa-store"></i> <span id="activeBranchCount"></span>
         </div>
     </div>
 
@@ -87,7 +68,7 @@
     <header class="sticky top-0 z-40 glass-header border-b border-brand-border/60">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
-                
+
                 <!-- Logo -->
                 <a href="index.html" class="flex items-center">
                     <img id="headerLogo" src="logo.png" alt="Эл Суши Лого"
@@ -105,17 +86,25 @@
                 <!-- Search -->
                 <div class="hidden md:flex items-center flex-1 max-w-md mx-8 relative">
                     <i class="fa-solid fa-magnifying-glass absolute left-4 text-gray-400"></i>
-                    <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Роллдорду же сеттерди издөө..." 
+                    <input type="text" id="searchInput" oninput="handleSearch()"
+                        data-i18n-placeholder="search_placeholder"
                         class="w-full bg-brand-card border border-brand-border rounded-full py-2.5 pl-11 pr-4 text-sm text-white placeholder-gray-400 focus:outline-none focus:border-brand-red transition">
                 </div>
 
                 <!-- Actions -->
-                <div class="flex items-center gap-4">
-                    <a href="#menu" class="hidden sm:inline-block text-gray-300 hover:text-white font-medium text-sm transition">Меню</a>
-                    <a href="#branches" class="hidden sm:inline-block text-gray-300 hover:text-white font-medium text-sm transition">Филиалдар</a>
+                <div class="flex items-center gap-3">
+                    <a href="#menu"     data-i18n="nav_menu"     class="hidden sm:inline-block text-gray-300 hover:text-white font-medium text-sm transition"></a>
+                    <a href="#branches" data-i18n="nav_branches" class="hidden sm:inline-block text-gray-300 hover:text-white font-medium text-sm transition"></a>
+
+                    <!-- Тил которуу -->
+                    <div class="flex items-center gap-1 border border-brand-border rounded-full px-1 py-1">
+                        <button onclick="setLang('ru')" id="langBtn-ru" class="lang-btn text-xs font-bold px-2.5 py-1 rounded-full border">RU</button>
+                        <button onclick="setLang('ky')" id="langBtn-ky" class="lang-btn text-xs font-bold px-2.5 py-1 rounded-full border">КГ</button>
+                    </div>
+
                     <button onclick="toggleCart()" class="relative bg-brand-red hover:bg-brand-darkred text-white px-4 py-2 sm:px-5 sm:py-2.5 rounded-full font-semibold flex items-center gap-2.5 transition-all duration-200 glow-red">
                         <i class="fa-solid fa-basket-shopping text-base sm:text-lg"></i>
-                        <span class="hidden sm:inline">Себет</span>
+                        <span data-i18n="cart_btn" class="hidden sm:inline"></span>
                         <span id="cartBadge" class="bg-white text-brand-red text-xs font-black rounded-full px-2 py-0.5 min-w-[20px] text-center">0</span>
                     </button>
                 </div>
@@ -125,7 +114,8 @@
             <div class="pb-3 md:hidden">
                 <div class="relative">
                     <i class="fa-solid fa-magnifying-glass absolute left-4 top-3 text-gray-400"></i>
-                    <input type="text" id="mobileSearchInput" oninput="handleSearch()" placeholder="Издөө..." 
+                    <input type="text" id="mobileSearchInput" oninput="handleSearch()"
+                        data-i18n-placeholder="search_placeholder_short"
                         class="w-full bg-brand-card border border-brand-border rounded-full py-2 pl-11 pr-4 text-sm text-white placeholder-gray-400 focus:outline-none focus:border-brand-red">
                 </div>
             </div>
@@ -138,27 +128,26 @@
             <div class="grid md:grid-cols-2 gap-12 items-center">
                 <div class="space-y-6 text-center md:text-left">
                     <div class="inline-flex items-center gap-2 bg-brand-red/10 border border-brand-red/30 px-4 py-1.5 rounded-full text-brand-red text-sm font-semibold">
-                        <span>✨ Өзүңүзгө жакын филиалды тандап заказ бериңиз</span>
+                        <span data-i18n="hero_badge"></span>
                     </div>
                     <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight">
-                        Чыныгы <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-red to-orange-400">Япон даамы</span> Сиздин үйүңүздө
+                        <span data-i18n="hero_title_1"></span>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-red to-orange-400" data-i18n="hero_title_2"></span>
+                        <span data-i18n="hero_title_3"></span>
                     </h1>
-                    <p class="text-gray-400 text-base sm:text-lg max-w-xl mx-auto md:mx-0">
-                        Эл суши — элибиз үчүн эң даамдуу жана сапаттуу сушилер! Тандалган филиалдын WhatsApp номерине заказ заматта жөнөтүлөт.
-                    </p>
+                    <p data-i18n="hero_desc" class="text-gray-400 text-base sm:text-lg max-w-xl mx-auto md:mx-0"></p>
                     <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-                        <a href="#menu" class="bg-brand-red hover:bg-brand-darkred text-white font-bold px-8 py-4 rounded-xl text-center transition glow-red">
-                            Менюну көрүү
-                        </a>
+                        <a href="#menu" data-i18n="hero_btn_menu" class="bg-brand-red hover:bg-brand-darkred text-white font-bold px-8 py-4 rounded-xl text-center transition glow-red"></a>
                         <a href="#branches" class="bg-brand-card hover:bg-brand-border text-white border border-brand-border font-bold px-8 py-4 rounded-xl text-center transition flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-location-dot text-brand-red"></i> Биздин Филиалдар
+                            <i class="fa-solid fa-location-dot text-brand-red"></i>
+                            <span data-i18n="hero_btn_branches"></span>
                         </a>
                     </div>
                 </div>
                 <div class="relative">
                     <div class="absolute -inset-4 bg-gradient-to-r from-brand-red to-orange-500 rounded-3xl blur-2xl opacity-20 animate-pulse"></div>
-                    <img src="https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=1000&q=80" 
-                        alt="Премиум Суши Сет" 
+                    <img src="https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=1000&q=80"
+                        alt="Суши Сет"
                         class="relative rounded-3xl object-cover w-full h-[320px] sm:h-[420px] shadow-2xl border border-brand-border">
                 </div>
             </div>
@@ -169,8 +158,8 @@
     <section id="menu" class="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
             <div>
-                <h2 class="text-3xl font-extrabold text-white">Биздин Меню</h2>
-                <p class="text-gray-400 text-sm mt-1">Каалаган категорияны тандап заказ бериңиз</p>
+                <h2 data-i18n="menu_title" class="text-3xl font-extrabold text-white"></h2>
+                <p data-i18n="menu_subtitle" class="text-gray-400 text-sm mt-1"></p>
             </div>
             <div class="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar" id="categoryContainer"></div>
         </div>
@@ -181,8 +170,8 @@
     <section id="branches" class="py-16 bg-brand-card/30 border-t border-brand-border/40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-2xl mx-auto mb-12">
-                <h2 class="text-3xl font-extrabold text-white">Биздин Филиалдар</h2>
-                <p class="text-gray-400 text-sm mt-2">Каалаган филиалыбызга түздөн-түз чалып же WhatsApp аркылуу жазсаңыз болот</p>
+                <h2 data-i18n="branches_title" class="text-3xl font-extrabold text-white"></h2>
+                <p data-i18n="branches_subtitle" class="text-gray-400 text-sm mt-2"></p>
             </div>
             <div id="branchesDisplayGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </div>
@@ -192,8 +181,8 @@
     <footer class="bg-brand-card border-t border-brand-border/80 text-gray-400 mt-auto pt-12 pb-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pb-10 border-b border-brand-border/60">
-                
-                <!-- Col 1: About & Logo -->
+
+                <!-- Col 1 -->
                 <div class="space-y-4">
                     <div class="flex items-center">
                         <img id="footerLogo" src="logo.png" alt="Эл Суши" class="h-10 w-auto object-contain"
@@ -206,51 +195,44 @@
                             </div>
                         </div>
                     </div>
-                    <p class="text-xs leading-relaxed text-gray-400">
-                        Бизде ар дайым жаңы, сапаттуу жана даамдуу роллдор! Кардарларыбызга жогорку деңгээлдеги кызмат көрсөтүү — биздин башкы максатыбыз.
-                    </p>
-                    <div class="flex items-center gap-3 pt-2" id="footerSocialLinks">
-                        <!-- Rendered by JS -->
-                    </div>
+                    <p data-i18n="footer_about" class="text-xs leading-relaxed text-gray-400"></p>
+                    <div class="flex items-center gap-3 pt-2" id="footerSocialLinks"></div>
                 </div>
 
-                <!-- Col 2: Navigation -->
+                <!-- Col 2 -->
                 <div class="space-y-3">
-                    <h4 class="text-sm font-bold text-white uppercase tracking-wider">Навигация</h4>
+                    <h4 data-i18n="footer_nav_title" class="text-sm font-bold text-white uppercase tracking-wider"></h4>
                     <ul class="space-y-2 text-xs">
-                        <li><a href="#menu" class="hover:text-brand-red transition">Биздин Меню</a></li>
-                        <li><a href="#branches" class="hover:text-brand-red transition">Филиалдар</a></li>
-                        <li><a href="#menu" class="hover:text-brand-red transition">Акциялар жана арзандатуулар</a></li>
-                        <li><a href="javascript:void(0)" onclick="toggleCart()" class="hover:text-brand-red transition">Себетти көрүү</a></li>
+                        <li><a href="#menu"     data-i18n="nav_menu"       class="hover:text-brand-red transition"></a></li>
+                        <li><a href="#branches" data-i18n="nav_branches"   class="hover:text-brand-red transition"></a></li>
+                        <li><a href="#menu"     data-i18n="nav_promos"     class="hover:text-brand-red transition"></a></li>
+                        <li><a href="javascript:void(0)" onclick="toggleCart()" data-i18n="nav_cart" class="hover:text-brand-red transition"></a></li>
                     </ul>
                 </div>
 
-                <!-- Col 3: Contacts -->
+                <!-- Col 3 -->
                 <div class="space-y-3">
-                    <h4 class="text-sm font-bold text-white uppercase tracking-wider">Байланыш</h4>
-                    <ul class="space-y-2 text-xs" id="footerContactInfo">
-                        <!-- Rendered by JS -->
-                    </ul>
+                    <h4 data-i18n="footer_contacts_title" class="text-sm font-bold text-white uppercase tracking-wider"></h4>
+                    <ul class="space-y-2 text-xs" id="footerContactInfo"></ul>
                 </div>
 
-                <!-- Col 4: Quick Info -->
+                <!-- Col 4 -->
                 <div class="space-y-3">
-                    <h4 class="text-sm font-bold text-white uppercase tracking-wider">Жеткирүү</h4>
-                    <p class="text-xs leading-relaxed">
-                        Заказдар шаар ичинде тез арада жеткирилет. 2500 сомдон жогору болсо жеткирүү <b>АКЫСЫЗ</b>!
-                    </p>
+                    <h4 data-i18n="footer_delivery_title" class="text-sm font-bold text-white uppercase tracking-wider"></h4>
+                    <p data-i18n="footer_delivery_text" class="text-xs leading-relaxed"></p>
                     <div class="bg-brand-bg/60 p-3 rounded-xl border border-brand-border/60 text-[11px] text-brand-gold flex items-center gap-2">
                         <i class="fa-solid fa-motorcycle text-lg"></i>
-                        <span>Орточо жеткирүү убактысы: 30-45 мүнөт</span>
+                        <span data-i18n="footer_delivery_time"></span>
                     </div>
                 </div>
             </div>
+
             <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
-                <p>© 2026 ЭЛ СУШИ. Бардык укуктар корголгон.</p>
+                <p data-i18n="footer_copy"></p>
                 <div class="flex gap-4 text-gray-500 text-[11px]">
-                    <a href="#" class="hover:text-gray-400 transition">Купуялуулук саясаты</a>
+                    <a href="#" data-i18n="footer_privacy" class="hover:text-gray-400 transition"></a>
                     <span>•</span>
-                    <a href="#" class="hover:text-gray-400 transition">Колдонуу шарттары</a>
+                    <a href="#" data-i18n="footer_terms" class="hover:text-gray-400 transition"></a>
                 </div>
             </div>
         </div>
@@ -263,11 +245,11 @@
             <div class="p-5 border-b border-brand-border flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-basket-shopping text-brand-red text-xl"></i>
-                    <h3 class="text-lg font-bold text-white">Себет</h3>
+                    <h3 data-i18n="cart_title" class="text-lg font-bold text-white"></h3>
                 </div>
                 <div class="flex items-center gap-3">
                     <button onclick="clearCart()" class="text-xs text-gray-500 hover:text-red-400 transition">
-                        <i class="fa-solid fa-trash mr-1"></i>Тазалоо
+                        <i class="fa-solid fa-trash mr-1"></i><span data-i18n="cart_clear"></span>
                     </button>
                     <button onclick="toggleCart()" class="text-gray-400 hover:text-white p-2 text-xl">
                         <i class="fa-solid fa-xmark"></i>
@@ -278,22 +260,22 @@
             <div class="p-5 border-t border-brand-border bg-brand-bg/50 space-y-4">
                 <div class="space-y-2">
                     <div class="flex justify-between text-sm text-gray-400">
-                        <span>Тамактардын баасы:</span>
-                        <span id="subtotalPrice">0 сом</span>
+                        <span data-i18n="cart_subtotal_label"></span>
+                        <span id="subtotalPrice">0</span>
                     </div>
                     <div class="flex justify-between text-sm text-gray-400">
-                        <span>Жеткирүү:</span>
-                        <span id="deliveryPrice">150 сом</span>
+                        <span data-i18n="cart_delivery_label"></span>
+                        <span id="deliveryPrice"></span>
                     </div>
                     <div class="flex justify-between text-lg font-bold text-white pt-2 border-t border-brand-border">
-                        <span>Жалпы сумма:</span>
-                        <span id="totalPrice" class="text-brand-red">0 сом</span>
+                        <span data-i18n="cart_total_label"></span>
+                        <span id="totalPrice" class="text-brand-red">0</span>
                     </div>
                 </div>
                 <button onclick="openCheckoutModal()" id="checkoutBtn" disabled
                     class="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-700 text-white font-bold py-3.5 rounded-xl transition flex items-center justify-center gap-2">
                     <i class="fa-brands fa-whatsapp text-xl"></i>
-                    <span>Филиалды тандап заказ берүү</span>
+                    <span data-i18n="cart_checkout_btn"></span>
                 </button>
             </div>
         </div>
@@ -305,37 +287,37 @@
             <button onclick="closeCheckoutModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl">
                 <i class="fa-solid fa-xmark"></i>
             </button>
-            <h3 class="text-2xl font-bold text-white mb-2">Заказды тариздөө</h3>
-            <p class="text-xs text-gray-400 mb-6">Филиалды тандасаңыз заказ алардын WhatsApp номерине жөнөтүлөт</p>
+            <h3 data-i18n="checkout_title" class="text-2xl font-bold text-white mb-2"></h3>
+            <p data-i18n="checkout_subtitle" class="text-xs text-gray-400 mb-6"></p>
             <form id="orderForm" onsubmit="submitOrderToWhatsapp(event)" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold uppercase text-brand-gold mb-1">1. Филиалды тандаңыз *</label>
+                    <label data-i18n="checkout_branch_label" class="block text-xs font-semibold uppercase text-brand-gold mb-1"></label>
                     <select id="custBranch" required class="w-full bg-brand-bg border border-brand-gold/50 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-brand-gold"></select>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Аты-жөнүңүз *</label>
-                    <input type="text" required id="custName" placeholder="Мисалы: Асан" 
+                    <label data-i18n="checkout_name_label" class="block text-xs font-semibold uppercase text-gray-400 mb-1"></label>
+                    <input type="text" required id="custName" data-i18n-placeholder="checkout_name_placeholder"
                         class="w-full bg-brand-bg border border-brand-border rounded-xl p-3 text-sm text-white focus:outline-none focus:border-brand-red">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Телефон номериңиз *</label>
-                    <input type="tel" required id="custPhone" placeholder="0 (555) 00-00-00" 
+                    <label data-i18n="checkout_phone_label" class="block text-xs font-semibold uppercase text-gray-400 mb-1"></label>
+                    <input type="tel" required id="custPhone" placeholder="0 (555) 00-00-00"
                         class="w-full bg-brand-bg border border-brand-border rounded-xl p-3 text-sm text-white focus:outline-none focus:border-brand-red">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Жеткирүү дареги *</label>
-                    <input type="text" required id="custAddress" placeholder="Улица, үй, батир..." 
+                    <label data-i18n="checkout_address_label" class="block text-xs font-semibold uppercase text-gray-400 mb-1"></label>
+                    <input type="text" required id="custAddress" data-i18n-placeholder="checkout_address_placeholder"
                         class="w-full bg-brand-bg border border-brand-border rounded-xl p-3 text-sm text-white focus:outline-none focus:border-brand-red">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Заказга комментарий</label>
-                    <textarea id="custNotes" rows="2" placeholder="Васаби, имбирь канча кишиге..." 
+                    <label data-i18n="checkout_notes_label" class="block text-xs font-semibold uppercase text-gray-400 mb-1"></label>
+                    <textarea id="custNotes" rows="2" data-i18n-placeholder="checkout_notes_placeholder"
                         class="w-full bg-brand-bg border border-brand-border rounded-xl p-3 text-sm text-white focus:outline-none focus:border-brand-red"></textarea>
                 </div>
                 <div class="pt-4 border-t border-brand-border">
                     <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl transition flex items-center justify-center gap-2">
                         <i class="fa-brands fa-whatsapp text-xl"></i>
-                        <span>WhatsApp'ка Заказды жөнөтүү</span>
+                        <span data-i18n="checkout_submit_btn"></span>
                     </button>
                 </div>
             </form>
@@ -345,338 +327,594 @@
     <!-- TOAST -->
     <div id="toast" class="fixed bottom-6 right-6 z-50 bg-brand-red text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 translate-y-20 opacity-0 transition-all duration-300">
         <i class="fa-solid fa-circle-check text-xl"></i>
-        <span id="toastMsg" class="font-medium text-sm">Тамак себетке кошулду!</span>
+        <span id="toastMsg" class="font-medium text-sm"></span>
     </div>
 
     <script>
-        // ── Жашыруун Admin кирүү ──
-        document.addEventListener('keydown', function(e) {
-            if (e.ctrlKey && e.shiftKey && e.code === 'KeyA') {
-                window.location.href = 'admin.html';
-            }
+    // ════════════════════════════════════════════════════
+    //  КОТОРМО СИСТЕМАСЫ
+    // ════════════════════════════════════════════════════
+    const i18n = {
+        ru: {
+            // Announcement bar
+            promo_label:              'АКЦИЯ:',
+            promo_text:               'При заказе от 2500 сом — Бесплатная доставка!',
+            // Header nav
+            nav_menu:                 'Меню',
+            nav_branches:             'Филиалы',
+            nav_promos:               'Акции и скидки',
+            nav_cart:                 'Корзина',
+            cart_btn:                 'Корзина',
+            search_placeholder:       'Искать роллы или сеты...',
+            search_placeholder_short: 'Поиск...',
+            // Hero
+            hero_badge:               '✨ Выберите ближайший филиал и оформите заказ',
+            hero_title_1:             'Настоящий ',
+            hero_title_2:             'японский вкус',
+            hero_title_3:             ' у вас дома',
+            hero_desc:                'Эл суши — самые вкусные и качественные суши для нашего народа! Заказ мгновенно отправляется на WhatsApp выбранного филиала.',
+            hero_btn_menu:            'Смотреть меню',
+            hero_btn_branches:        'Наши филиалы',
+            // Menu
+            menu_title:               'Наше Меню',
+            menu_subtitle:            'Выберите категорию и оформите заказ',
+            menu_empty:               'В этой категории пока нет позиций',
+            menu_add_btn:             'Добавить',
+            // Branches
+            branches_title:           'Наши Филиалы',
+            branches_subtitle:        'Позвоните или напишите нам в WhatsApp в любой из наших филиалов',
+            branch_whatsapp:          'Написать в WhatsApp',
+            // Branch count
+            branch_count:             (n) => `${n} ${n===1?'филиал работает':(n>=2&&n<=4?'филиала работают':'филиалов работают')}`,
+            work_hours_prefix:        'Режим работы: ',
+            daily_prefix:             'Ежедневно: ',
+            // Footer
+            footer_about:             'У нас всегда свежие, качественные и вкусные роллы! Высокий уровень обслуживания клиентов — наша главная цель.',
+            footer_nav_title:         'Навигация',
+            footer_contacts_title:    'Контакты',
+            footer_delivery_title:    'Доставка',
+            footer_delivery_text:     'Заказы доставляются по городу в кратчайшие сроки. При заказе от 2500 сом — доставка БЕСПЛАТНО!',
+            footer_delivery_time:     'Среднее время доставки: 30–45 минут',
+            footer_copy:              '© 2026 ЭЛ СУШИ. Все права защищены.',
+            footer_privacy:           'Политика конфиденциальности',
+            footer_terms:             'Условия использования',
+            // Cart
+            cart_title:               'Корзина',
+            cart_clear:               'Очистить',
+            cart_empty:               'Ваша корзина пуста',
+            cart_subtotal_label:      'Стоимость блюд:',
+            cart_delivery_label:      'Доставка:',
+            cart_total_label:         'Итого:',
+            cart_checkout_btn:        'Выбрать филиал и оформить заказ',
+            cart_free_delivery:       'БЕСПЛАТНО 🎉',
+            cart_confirm_clear:       'Очистить корзину?',
+            cart_added_toast:         (name) => `"${name}" добавлен в корзину`,
+            // Checkout
+            checkout_title:           'Оформление заказа',
+            checkout_subtitle:        'После выбора филиала заказ будет отправлен на их WhatsApp',
+            checkout_branch_label:    '1. Выберите филиал *',
+            checkout_name_label:      'Ваше имя *',
+            checkout_name_placeholder:'Например: Иван',
+            checkout_phone_label:     'Ваш номер телефона *',
+            checkout_address_label:   'Адрес доставки *',
+            checkout_address_placeholder: 'Улица, дом, квартира...',
+            checkout_notes_label:     'Комментарий к заказу',
+            checkout_notes_placeholder:'Васаби, имбирь на сколько человек...',
+            checkout_submit_btn:      'Отправить заказ в WhatsApp',
+            order_sent_toast:         'Заказ отправлен в WhatsApp!',
+            // WhatsApp message
+            wa_header:                '🍣 *ЭЛ СУШИ — НОВЫЙ ЗАКАЗ* 🍣\n\n',
+            wa_branch:                '🏢 *Филиал:* ',
+            wa_client:                '👤 *Клиент:* ',
+            wa_phone:                 '📞 *Телефон:* ',
+            wa_address:               '📍 *Адрес:* ',
+            wa_comment:               '💬 *Комментарий:* ',
+            wa_items:                 '🍣 *БЛЮДА:*\n',
+            wa_subtotal:              '💰 *Блюда:* ',
+            wa_delivery:              '🚚 *Доставка:* ',
+            wa_total:                 '🔥 *ИТОГО:* ',
+            wa_free:                  'БЕСПЛАТНО',
+            wa_currency:              ' сом',
+        },
+        ky: {
+            // Announcement bar
+            promo_label:              'АКЦИЯ:',
+            promo_text:               '2500 сомдон жогору заказга Акысыз жеткирүү!',
+            // Header nav
+            nav_menu:                 'Меню',
+            nav_branches:             'Филиалдар',
+            nav_promos:               'Акциялар жана арзандатуулар',
+            nav_cart:                 'Себетти көрүү',
+            cart_btn:                 'Себет',
+            search_placeholder:       'Роллдорду же сеттерди издөө...',
+            search_placeholder_short: 'Издөө...',
+            // Hero
+            hero_badge:               '✨ Өзүңүзгө жакын филиалды тандап заказ бериңиз',
+            hero_title_1:             'Чыныгы ',
+            hero_title_2:             'Япон даамы',
+            hero_title_3:             ' Сиздин үйүңүздө',
+            hero_desc:                'Эл суши — элибиз үчүн эң даамдуу жана сапаттуу сушилер! Тандалган филиалдын WhatsApp номерине заказ заматта жөнөтүлөт.',
+            hero_btn_menu:            'Менюну көрүү',
+            hero_btn_branches:        'Биздин Филиалдар',
+            // Menu
+            menu_title:               'Биздин Меню',
+            menu_subtitle:            'Каалаган категорияны тандап заказ бериңиз',
+            menu_empty:               'Бул категорияда азырынча тамак жок',
+            menu_add_btn:             'Кошуу',
+            // Branches
+            branches_title:           'Биздин Филиалдар',
+            branches_subtitle:        'Каалаган филиалыбызга түздөн-түз чалып же WhatsApp аркылуу жазсаңыз болот',
+            branch_whatsapp:          'WhatsApp аркылуу байланышуу',
+            // Branch count
+            branch_count:             (n) => `${n} филиал иштеп жатат`,
+            work_hours_prefix:        'Иштөө убактысы: ',
+            daily_prefix:             'Күн сайын: ',
+            // Footer
+            footer_about:             'Бизде ар дайым жаңы, сапаттуу жана даамдуу роллдор! Кардарларыбызга жогорку деңгээлдеги кызмат көрсөтүү — биздин башкы максатыбыз.',
+            footer_nav_title:         'Навигация',
+            footer_contacts_title:    'Байланыш',
+            footer_delivery_title:    'Жеткирүү',
+            footer_delivery_text:     'Заказдар шаар ичинде тез арада жеткирилет. 2500 сомдон жогору болсо жеткирүү АКЫСЫЗ!',
+            footer_delivery_time:     'Орточо жеткирүү убактысы: 30–45 мүнөт',
+            footer_copy:              '© 2026 ЭЛ СУШИ. Бардык укуктар корголгон.',
+            footer_privacy:           'Купуялуулук саясаты',
+            footer_terms:             'Колдонуу шарттары',
+            // Cart
+            cart_title:               'Себет',
+            cart_clear:               'Тазалоо',
+            cart_empty:               'Себетиңиз бош',
+            cart_subtotal_label:      'Тамактардын баасы:',
+            cart_delivery_label:      'Жеткирүү:',
+            cart_total_label:         'Жалпы сумма:',
+            cart_checkout_btn:        'Филиалды тандап заказ берүү',
+            cart_free_delivery:       'АКЫСЫЗ 🎉',
+            cart_confirm_clear:       'Себетти тазалайсызбы?',
+            cart_added_toast:         (name) => `"${name}" себетке кошулду`,
+            // Checkout
+            checkout_title:           'Заказды тариздөө',
+            checkout_subtitle:        'Филиалды тандасаңыз заказ алардын WhatsApp номерине жөнөтүлөт',
+            checkout_branch_label:    '1. Филиалды тандаңыз *',
+            checkout_name_label:      'Аты-жөнүңүз *',
+            checkout_name_placeholder:'Мисалы: Асан',
+            checkout_phone_label:     'Телефон номериңиз *',
+            checkout_address_label:   'Жеткирүү дареги *',
+            checkout_address_placeholder: 'Улица, үй, батир...',
+            checkout_notes_label:     'Заказга комментарий',
+            checkout_notes_placeholder:'Васаби, имбирь канча кишиге...',
+            checkout_submit_btn:      'WhatsApp\'ка Заказды жөнөтүү',
+            order_sent_toast:         'Заказ WhatsApp\'ка жөнөтүлдү!',
+            // WhatsApp message
+            wa_header:                '🍣 *ЭЛ СУШИ — ЖАҢЫ ЗАКАЗ* 🍣\n\n',
+            wa_branch:                '🏢 *Тандалган Филиал:* ',
+            wa_client:                '👤 *Кардар:* ',
+            wa_phone:                 '📞 *Телефон:* ',
+            wa_address:               '📍 *Дареги:* ',
+            wa_comment:               '💬 *Коммент:* ',
+            wa_items:                 '🍣 *ТАМАКТАР:*\n',
+            wa_subtotal:              '💰 *Тамактар:* ',
+            wa_delivery:              '🚚 *Жеткирүү:* ',
+            wa_total:                 '🔥 *ЖАЛПЫ СУММА:* ',
+            wa_free:                  'АКЫСЫЗ',
+            wa_currency:              ' сом',
+        }
+    };
+
+    // Учурдагы тил
+    let currentLang = localStorage.getItem('elsushi_lang') || 'ru';
+
+    function t(key, ...args) {
+        const val = i18n[currentLang][key];
+        if (typeof val === 'function') return val(...args);
+        return val || i18n['ru'][key] || key;
+    }
+
+    function setLang(lang) {
+        currentLang = lang;
+        localStorage.setItem('elsushi_lang', lang);
+        applyTranslations();
+        renderAll();
+        // Баскычтарды жаңылоо
+        document.getElementById('langBtn-ru').classList.toggle('active', lang === 'ru');
+        document.getElementById('langBtn-ky').classList.toggle('active', lang === 'ky');
+        document.documentElement.lang = lang;
+    }
+
+    function applyTranslations() {
+        // data-i18n текст
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            const val = t(key);
+            if (typeof val === 'string') el.textContent = val;
         });
-
-        // ── Default маалыматтар ──
-        const defaultCategories = [
-            { id: 'all', label: 'Бардыгы' },
-            { id: 'rolls', label: 'Роллдор' },
-            { id: 'sets', label: 'Сеттер' },
-            { id: 'tempura', label: 'Темпура' },
-            { id: 'sushi', label: 'Суши' },
-            { id: 'drinks', label: 'Суусундуктар' }
-        ];
-        const defaultBranches = [
-            { id: 1, name: 'Эл суши - Бишкек Центр', address: 'Манас проспектиси 40', phone: '996555001122' },
-            { id: 2, name: 'Эл суши - Түштүк', address: '7-Кичи район 12/2', phone: '996700001122' }
-        ];
-        const defaultProducts = [
-            { id: 1, name: 'Филадельфия Классик', category: 'rolls', price: 520, weight: '280г (8 шт)', desc: 'Лосось, каймак сыры (филадельфия), бадыраң, суши күрүчү.', image: 'https://images.unsplash.com/photo-1611143669185-af224c5e3252?auto=format&fit=crop&w=600&q=80', badge: 'Хит' },
-            { id: 2, name: 'Калифорния Уграсы', category: 'rolls', price: 480, weight: '260г (8 шт)', desc: 'Угра (угорь), авокадо, масаго икрасы, унаги соусу.', image: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=600&q=80' },
-            { id: 3, name: 'Запеченный Сет VIP', category: 'sets', price: 1850, weight: '1200г (32 шт)', desc: 'Запеченная Филадельфия, Запеченный сыр ролл, Тобико Сет.', image: 'https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?auto=format&fit=crop&w=600&q=80', badge: 'Топ' }
-        ];
-        const defaultSiteSettings = {
-            phone: '+996 (555) 00-11-22',
-            address: 'Бишкек ш., Манас проспектиси 40',
-            workHours: '10:00 - 02:00',
-            instagram: 'https://instagram.com',
-            whatsapp: '996555001122',
-            telegram: 'https://t.me'
-        };
-
-        // ── Маалыматтарды жүктөө ──
-        let categories = JSON.parse(localStorage.getItem('elsushi_categories')) || defaultCategories;
-        let branches   = JSON.parse(localStorage.getItem('elsushi_branches'))   || defaultBranches;
-        let products   = JSON.parse(localStorage.getItem('elsushi_products'))   || defaultProducts;
-        let siteSettings = JSON.parse(localStorage.getItem('elsushi_settings')) || defaultSiteSettings;
-
-        // ── Себет — localStorage'га сактоо ──
-        let cart = JSON.parse(localStorage.getItem('elsushi_cart')) || [];
-
-        let activeCategory = 'all';
-
-        function saveCart() {
-            localStorage.setItem('elsushi_cart', JSON.stringify(cart));
-        }
-
-        // ── Init ──
-        document.addEventListener('DOMContentLoaded', () => {
-            renderCategories();
-            renderProducts();
-            renderBranchesDisplay();
-            updateCartUI();
-            updateBranchDropdown();
-            renderFooterContacts();
-            document.getElementById('activeBranchCount').innerText = `${branches.length} филиал иштеп жатат`;
-            const wh = document.getElementById('headerWorkHours');
-            if (wh) wh.innerText = `Иштөө убактысы: ${siteSettings.workHours}`;
+        // data-i18n-placeholder
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            const key = el.getAttribute('data-i18n-placeholder');
+            el.placeholder = t(key);
         });
+        // Иштөө убактысы
+        const wh = document.getElementById('headerWorkHours');
+        if (wh) wh.textContent = t('work_hours_prefix') + siteSettings.workHours;
+        // Филиалдар саны
+        const bc = document.getElementById('activeBranchCount');
+        if (bc) bc.textContent = t('branch_count', branches.length);
+        // Footer байланыш
+        renderFooterContacts();
+    }
 
-        // ── Footer байланыш ──
-        function renderFooterContacts() {
-            const s = siteSettings;
-            document.getElementById('footerContactInfo').innerHTML = `
-                <li class="flex items-center gap-2"><i class="fa-solid fa-phone text-brand-red"></i><span>${s.phone}</span></li>
-                <li class="flex items-center gap-2"><i class="fa-solid fa-clock text-brand-red"></i><span>Күн сайын: ${s.workHours}</span></li>
-                <li class="flex items-start gap-2"><i class="fa-solid fa-location-dot text-brand-red mt-0.5"></i><span>${s.address}</span></li>
-            `;
-            document.getElementById('footerSocialLinks').innerHTML = `
-                <a href="${s.instagram}" target="_blank" class="w-9 h-9 bg-brand-bg hover:bg-brand-red hover:text-white border border-brand-border rounded-xl flex items-center justify-center transition-all duration-200">
-                    <i class="fa-brands fa-instagram text-base"></i>
-                </a>
-                <a href="https://wa.me/${s.whatsapp}" target="_blank" class="w-9 h-9 bg-brand-bg hover:bg-green-600 hover:text-white border border-brand-border rounded-xl flex items-center justify-center transition-all duration-200">
-                    <i class="fa-brands fa-whatsapp text-base"></i>
-                </a>
-                <a href="${s.telegram}" target="_blank" class="w-9 h-9 bg-brand-bg hover:bg-sky-500 hover:text-white border border-brand-border rounded-xl flex items-center justify-center transition-all duration-200">
-                    <i class="fa-brands fa-telegram text-base"></i>
-                </a>
-            `;
+    // ════════════════════════════════════════════════════
+    //  DEFAULT МААЛЫМАТТАР
+    // ════════════════════════════════════════════════════
+    const defaultCategories = [
+        { id: 'all', label_ru: 'Все', label_ky: 'Бардыгы' },
+        { id: 'rolls',   label_ru: 'Роллы',    label_ky: 'Роллдор' },
+        { id: 'sets',    label_ru: 'Сеты',     label_ky: 'Сеттер' },
+        { id: 'tempura', label_ru: 'Темпура',  label_ky: 'Темпура' },
+        { id: 'sushi',   label_ru: 'Суши',     label_ky: 'Суши' },
+        { id: 'drinks',  label_ru: 'Напитки',  label_ky: 'Суусундуктар' }
+    ];
+    const defaultBranches = [
+        { id: 1, name: 'Эл суши - Бишкек Центр', address: 'Манас проспектиси 40', phone: '996555001122' },
+        { id: 2, name: 'Эл суши - Түштүк',       address: '7-Кичи район 12/2',    phone: '996700001122' }
+    ];
+    const defaultProducts = [
+        { id: 1, name: 'Филадельфия Классик', category: 'rolls', price: 520, weight: '280г (8 шт)', desc: 'Лосось, каймак сыры (филадельфия), бадыраң, суши күрүчү.', image: 'https://images.unsplash.com/photo-1611143669185-af224c5e3252?auto=format&fit=crop&w=600&q=80', badge: 'Хит' },
+        { id: 2, name: 'Калифорния Уграсы',  category: 'rolls', price: 480, weight: '260г (8 шт)', desc: 'Угра (угорь), авокадо, масаго икрасы, унаги соусу.',       image: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=600&q=80' },
+        { id: 3, name: 'Запеченный Сет VIP', category: 'sets',  price: 1850, weight: '1200г (32 шт)', desc: 'Запеченная Филадельфия, Запеченный сыр ролл, Тобико Сет.', image: 'https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?auto=format&fit=crop&w=600&q=80', badge: 'Топ' }
+    ];
+    const defaultSiteSettings = {
+        phone: '+996 (555) 00-11-22',
+        address: 'Бишкек ш., Манас проспектиси 40',
+        workHours: '10:00 - 02:00',
+        instagram: 'https://instagram.com',
+        whatsapp: '996555001122',
+        telegram: 'https://t.me'
+    };
+
+    let categories   = JSON.parse(localStorage.getItem('elsushi_categories')) || defaultCategories;
+    let branches     = JSON.parse(localStorage.getItem('elsushi_branches'))   || defaultBranches;
+    let products     = JSON.parse(localStorage.getItem('elsushi_products'))   || defaultProducts;
+    let siteSettings = JSON.parse(localStorage.getItem('elsushi_settings'))   || defaultSiteSettings;
+    let cart         = JSON.parse(localStorage.getItem('elsushi_cart'))        || [];
+    let activeCategory = 'all';
+
+    function saveCart() { localStorage.setItem('elsushi_cart', JSON.stringify(cart)); }
+
+    // Категория label'ын тил боюнча кайтаруу
+    function getCatLabel(cat) {
+        if (currentLang === 'ky' && cat.label_ky) return cat.label_ky;
+        if (cat.label_ru) return cat.label_ru;
+        return cat.label || cat.id;
+    }
+
+    // ════════════════════════════════════════════════════
+    //  INIT
+    // ════════════════════════════════════════════════════
+    document.addEventListener('DOMContentLoaded', () => {
+        // Тил баскычтарын орнот
+        document.getElementById('langBtn-ru').classList.toggle('active', currentLang === 'ru');
+        document.getElementById('langBtn-ky').classList.toggle('active', currentLang === 'ky');
+        document.documentElement.lang = currentLang;
+        renderAll();
+        applyTranslations();
+    });
+
+    // Жашыруун Admin
+    document.addEventListener('keydown', e => {
+        if (e.ctrlKey && e.shiftKey && e.code === 'KeyA') window.location.href = 'admin.html';
+    });
+
+    function renderAll() {
+        renderCategories();
+        renderProducts();
+        renderBranchesDisplay();
+        updateCartUI();
+        updateBranchDropdown();
+        applyTranslations();
+    }
+
+    // ════════════════════════════════════════════════════
+    //  FOOTER БАЙЛАНЫШ
+    // ════════════════════════════════════════════════════
+    function renderFooterContacts() {
+        const s = siteSettings;
+        document.getElementById('footerContactInfo').innerHTML = `
+            <li class="flex items-center gap-2"><i class="fa-solid fa-phone text-brand-red"></i><span>${s.phone}</span></li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-clock text-brand-red"></i><span>${t('daily_prefix')}${s.workHours}</span></li>
+            <li class="flex items-start gap-2"><i class="fa-solid fa-location-dot text-brand-red mt-0.5"></i><span>${s.address}</span></li>
+        `;
+        document.getElementById('footerSocialLinks').innerHTML = `
+            <a href="${s.instagram}" target="_blank" class="w-9 h-9 bg-brand-bg hover:bg-brand-red hover:text-white border border-brand-border rounded-xl flex items-center justify-center transition-all duration-200">
+                <i class="fa-brands fa-instagram text-base"></i>
+            </a>
+            <a href="https://wa.me/${s.whatsapp}" target="_blank" class="w-9 h-9 bg-brand-bg hover:bg-green-600 hover:text-white border border-brand-border rounded-xl flex items-center justify-center transition-all duration-200">
+                <i class="fa-brands fa-whatsapp text-base"></i>
+            </a>
+            <a href="${s.telegram}" target="_blank" class="w-9 h-9 bg-brand-bg hover:bg-sky-500 hover:text-white border border-brand-border rounded-xl flex items-center justify-center transition-all duration-200">
+                <i class="fa-brands fa-telegram text-base"></i>
+            </a>
+        `;
+    }
+
+    // ════════════════════════════════════════════════════
+    //  КАТЕГОРИЯЛАР
+    // ════════════════════════════════════════════════════
+    function renderCategories() {
+        const container = document.getElementById('categoryContainer');
+        container.innerHTML = categories.map(cat => `
+            <button onclick="filterCategory('${cat.id}')"
+                class="px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200 ${
+                    activeCategory === cat.id
+                    ? 'bg-brand-red text-white glow-red'
+                    : 'bg-brand-card text-gray-400 hover:text-white border border-brand-border'
+                }">
+                ${getCatLabel(cat)}
+            </button>
+        `).join('');
+    }
+
+    function filterCategory(catId) {
+        activeCategory = catId;
+        renderCategories();
+        renderProducts();
+    }
+
+    // ════════════════════════════════════════════════════
+    //  ПРОДУКТТАР
+    // ════════════════════════════════════════════════════
+    function renderProducts(itemsToRender = null) {
+        const container = document.getElementById('productsGrid');
+        let list = itemsToRender !== null ? itemsToRender : products;
+        if (itemsToRender === null && activeCategory !== 'all') {
+            list = products.filter(p => p.category === activeCategory);
         }
-
-        // ── Категориялар ──
-        function renderCategories() {
-            const container = document.getElementById('categoryContainer');
-            container.innerHTML = categories.map(cat => `
-                <button onclick="filterCategory('${cat.id}')" 
-                    class="px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200 ${
-                        activeCategory === cat.id 
-                        ? 'bg-brand-red text-white glow-red' 
-                        : 'bg-brand-card text-gray-400 hover:text-white border border-brand-border'
-                    }">
-                    ${cat.label}
-                </button>
-            `).join('');
+        if (list.length === 0) {
+            container.innerHTML = `<div class="col-span-full py-12 text-center text-gray-400">${t('menu_empty')}</div>`;
+            return;
         }
-
-        function filterCategory(catId) {
-            activeCategory = catId;
-            renderCategories();
-            renderProducts();
-        }
-
-        // ── Продукттар ──
-        function renderProducts(itemsToRender = null) {
-            const container = document.getElementById('productsGrid');
-            let list = itemsToRender !== null ? itemsToRender : products;
-            if (itemsToRender === null && activeCategory !== 'all') {
-                list = products.filter(p => p.category === activeCategory);
-            }
-            if (list.length === 0) {
-                container.innerHTML = `<div class="col-span-full py-12 text-center text-gray-400">Бул категорияда азырынча тамак жок</div>`;
-                return;
-            }
-            container.innerHTML = list.map(p => `
-                <div class="product-card bg-brand-card border border-brand-border rounded-2xl overflow-hidden flex flex-col justify-between relative group">
-                    ${p.badge ? `<span class="absolute top-3 left-3 z-10 bg-brand-red text-white text-[10px] font-black uppercase px-2.5 py-1 rounded-md shadow">${p.badge}</span>` : ''}
-                    <div>
-                        <img src="${p.image}" alt="${p.name}" class="w-full h-48 object-cover" onerror="this.src='https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?auto=format&fit=crop&w=600&q=80'">
-                        <div class="p-5">
-                            <h3 class="font-bold text-white text-lg">${p.name}</h3>
-                            <p class="text-xs text-gray-400 mb-2">${p.weight || ''}</p>
-                            <p class="text-xs text-gray-400 line-clamp-2 mb-4">${p.desc || ''}</p>
-                        </div>
-                    </div>
-                    <div class="px-5 pb-5 pt-0 flex items-center justify-between mt-auto">
-                        <span class="text-xl font-extrabold text-white">${p.price} сом</span>
-                        <button onclick="addToCart(${p.id})" class="bg-brand-red hover:bg-brand-darkred text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 transition">
-                            <i class="fa-solid fa-plus"></i> Кошуу
-                        </button>
+        container.innerHTML = list.map(p => `
+            <div class="product-card bg-brand-card border border-brand-border rounded-2xl overflow-hidden flex flex-col justify-between relative group">
+                ${p.badge ? `<span class="absolute top-3 left-3 z-10 bg-brand-red text-white text-[10px] font-black uppercase px-2.5 py-1 rounded-md shadow">${p.badge}</span>` : ''}
+                <div>
+                    <img src="${p.image}" alt="${p.name}" class="w-full h-48 object-cover"
+                         onerror="this.src='https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?auto=format&fit=crop&w=600&q=80'">
+                    <div class="p-5">
+                        <h3 class="font-bold text-white text-lg">${p.name}</h3>
+                        <p class="text-xs text-gray-400 mb-2">${p.weight || ''}</p>
+                        <p class="text-xs text-gray-400 line-clamp-2 mb-4">${p.desc || ''}</p>
                     </div>
                 </div>
-            `).join('');
-        }
-
-        // ── Филиалдар ──
-        function renderBranchesDisplay() {
-            const container = document.getElementById('branchesDisplayGrid');
-            container.innerHTML = branches.map(b => `
-                <div class="bg-brand-card border border-brand-border rounded-2xl p-6 relative">
-                    <div class="w-10 h-10 bg-brand-gold/10 text-brand-gold rounded-xl flex items-center justify-center text-xl mb-4">
-                        <i class="fa-solid fa-store"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-2">${b.name}</h3>
-                    <p class="text-sm text-gray-400 mb-4"><i class="fa-solid fa-location-dot text-brand-red mr-2"></i>${b.address}</p>
-                    <a href="https://wa.me/${b.phone}" target="_blank" class="inline-flex items-center gap-2 text-green-400 font-bold text-sm hover:underline">
-                        <i class="fa-brands fa-whatsapp text-lg"></i> WhatsApp аркылуу байланышуу
-                    </a>
+                <div class="px-5 pb-5 pt-0 flex items-center justify-between mt-auto">
+                    <span class="text-xl font-extrabold text-white">${p.price}${t('wa_currency')}</span>
+                    <button onclick="addToCart(${p.id})"
+                        class="bg-brand-red hover:bg-brand-darkred text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 transition">
+                        <i class="fa-solid fa-plus"></i> ${t('menu_add_btn')}
+                    </button>
                 </div>
-            `).join('');
+            </div>
+        `).join('');
+    }
+
+    // ════════════════════════════════════════════════════
+    //  ФИЛИАЛДАР
+    // ════════════════════════════════════════════════════
+    function renderBranchesDisplay() {
+        const container = document.getElementById('branchesDisplayGrid');
+        container.innerHTML = branches.map(b => `
+            <div class="bg-brand-card border border-brand-border rounded-2xl p-6 relative">
+                <div class="w-10 h-10 bg-brand-gold/10 text-brand-gold rounded-xl flex items-center justify-center text-xl mb-4">
+                    <i class="fa-solid fa-store"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2">${b.name}</h3>
+                <p class="text-sm text-gray-400 mb-4"><i class="fa-solid fa-location-dot text-brand-red mr-2"></i>${b.address}</p>
+                <a href="https://wa.me/${b.phone}" target="_blank"
+                    class="inline-flex items-center gap-2 text-green-400 font-bold text-sm hover:underline">
+                    <i class="fa-brands fa-whatsapp text-lg"></i> ${t('branch_whatsapp')}
+                </a>
+            </div>
+        `).join('');
+    }
+
+    function updateBranchDropdown() {
+        const select = document.getElementById('custBranch');
+        select.innerHTML = branches.map(b =>
+            `<option value="${b.id}">${b.name} (${b.address})</option>`
+        ).join('');
+    }
+
+    // ════════════════════════════════════════════════════
+    //  СЕБЕТ
+    // ════════════════════════════════════════════════════
+    function addToCart(id) {
+        const item = products.find(p => p.id === id);
+        if (!item) return;
+        const exist = cart.find(c => c.id === id);
+        if (exist) { exist.qty += 1; }
+        else { cart.push({ ...item, qty: 1 }); }
+        saveCart();
+        updateCartUI();
+        showToast(t('cart_added_toast', item.name));
+    }
+
+    function updateQty(id, delta) {
+        const index = cart.findIndex(c => c.id === id);
+        if (index !== -1) {
+            cart[index].qty += delta;
+            if (cart[index].qty <= 0) cart.splice(index, 1);
         }
+        saveCart();
+        updateCartUI();
+    }
 
-        function updateBranchDropdown() {
-            const select = document.getElementById('custBranch');
-            select.innerHTML = branches.map(b => `
-                <option value="${b.id}">${b.name} (${b.address})</option>
-            `).join('');
-        }
-
-        // ── Себет ──
-        function addToCart(id) {
-            const item = products.find(p => p.id === id);
-            if (!item) return;
-            const exist = cart.find(c => c.id === id);
-            if (exist) { exist.qty += 1; } 
-            else { cart.push({ ...item, qty: 1 }); }
-            saveCart();
-            updateCartUI();
-            showToast(`"${item.name}" себетке кошулду`);
-        }
-
-        function updateQty(id, delta) {
-            const index = cart.findIndex(c => c.id === id);
-            if (index !== -1) {
-                cart[index].qty += delta;
-                if (cart[index].qty <= 0) cart.splice(index, 1);
-            }
-            saveCart();
-            updateCartUI();
-        }
-
-        function clearCart() {
-            if (cart.length === 0) return;
-            if (confirm('Себетти тазалайсызбы?')) {
-                cart = [];
-                saveCart();
-                updateCartUI();
-            }
-        }
-
-        function updateCartUI() {
-            const badge        = document.getElementById('cartBadge');
-            const container    = document.getElementById('cartItemsContainer');
-            const subtotalEl   = document.getElementById('subtotalPrice');
-            const totalEl      = document.getElementById('totalPrice');
-            const checkoutBtn  = document.getElementById('checkoutBtn');
-
-            const totalItems = cart.reduce((acc, i) => acc + i.qty, 0);
-            const subtotal   = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
-            const deliveryFee = (subtotal >= 2500 || subtotal === 0) ? 0 : 150;
-            const grandTotal  = subtotal === 0 ? 0 : subtotal + deliveryFee;
-
-            badge.innerText = totalItems;
-
-            if (cart.length === 0) {
-                container.innerHTML = `<div class="text-center text-gray-500 py-12"><i class="fa-solid fa-basket-shopping text-4xl mb-3 block opacity-30"></i>Себетиңиз бош</div>`;
-                checkoutBtn.disabled = true;
-            } else {
-                container.innerHTML = cart.map(item => `
-                    <div class="flex items-center gap-3 bg-brand-bg p-3 rounded-xl border border-brand-border">
-                        <img src="${item.image}" class="w-14 h-14 rounded-lg object-cover" onerror="this.src='https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?auto=format&fit=crop&w=100&q=60'">
-                        <div class="flex-1 min-w-0">
-                            <h4 class="text-sm font-bold text-white truncate">${item.name}</h4>
-                            <p class="text-xs text-brand-red font-semibold">${item.price * item.qty} сом</p>
-                        </div>
-                        <div class="flex items-center gap-2 bg-brand-card px-2 py-1 rounded-lg border border-brand-border">
-                            <button onclick="updateQty(${item.id}, -1)" class="text-gray-400 hover:text-white text-xs px-1">−</button>
-                            <span class="text-xs font-bold text-white w-4 text-center">${item.qty}</span>
-                            <button onclick="updateQty(${item.id}, 1)" class="text-gray-400 hover:text-white text-xs px-1">+</button>
-                        </div>
-                    </div>
-                `).join('');
-                checkoutBtn.disabled = false;
-            }
-
-            subtotalEl.innerText = `${subtotal} сом`;
-            document.getElementById('deliveryPrice').innerText = (deliveryFee === 0 && subtotal > 0) ? 'АКЫСЫЗ 🎉' : `${deliveryFee} сом`;
-            totalEl.innerText = `${grandTotal} сом`;
-        }
-
-        // ── WhatsApp Заказ ──
-        function submitOrderToWhatsapp(e) {
-            e.preventDefault();
-            const branchId = parseInt(document.getElementById('custBranch').value);
-            const selectedBranch = branches.find(b => b.id === branchId) || branches[0];
-
-            const name    = document.getElementById('custName').value;
-            const phone   = document.getElementById('custPhone').value;
-            const address = document.getElementById('custAddress').value;
-            const notes   = document.getElementById('custNotes').value;
-
-            const subtotal    = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
-            const deliveryFee = subtotal >= 2500 ? 0 : 150;
-            const grandTotal  = subtotal + deliveryFee;
-
-            let text = `🍣 *ЭЛ СУШИ — ЖАҢЫ ЗАКАЗ* 🍣\n\n`;
-            text += `🏢 *Тандалган Филиал:* ${selectedBranch.name} (${selectedBranch.address})\n`;
-            text += `👤 *Кардар:* ${name}\n`;
-            text += `📞 *Телефон:* ${phone}\n`;
-            text += `📍 *Дареги:* ${address}\n`;
-            if (notes) text += `💬 *Коммент:* ${notes}\n`;
-            text += `\n━━━━━━━━━━━━━━━━━━\n`;
-            text += `🍣 *ТАМАКТАР:*\n`;
-            cart.forEach((item, idx) => {
-                text += `${idx + 1}. ${item.name} × ${item.qty} шт = ${item.price * item.qty} сом\n`;
-            });
-            text += `━━━━━━━━━━━━━━━━━━\n`;
-            text += `💰 *Тамактар:* ${subtotal} сом\n`;
-            text += `🚚 *Жеткирүү:* ${deliveryFee === 0 ? 'АКЫСЫЗ' : deliveryFee + ' сом'}\n`;
-            text += `🔥 *ЖАЛПЫ СУММА:* ${grandTotal} сом\n`;
-
-            // Заказды тарыхка сактоо
-            saveOrderHistory({
-                id: Date.now(),
-                date: new Date().toLocaleString('ru-RU'),
-                branch: selectedBranch.name,
-                name, phone, address, notes,
-                items: cart.map(i => ({ name: i.name, qty: i.qty, price: i.price })),
-                subtotal, deliveryFee, grandTotal
-            });
-
-            window.open(`https://wa.me/${selectedBranch.phone}?text=${encodeURIComponent(text)}`, '_blank');
+    function clearCart() {
+        if (cart.length === 0) return;
+        if (confirm(t('cart_confirm_clear'))) {
             cart = [];
             saveCart();
             updateCartUI();
-            closeCheckoutModal();
-            showToast('Заказ WhatsApp\'ка жөнөтүлдү!');
+        }
+    }
+
+    function updateCartUI() {
+        const badge       = document.getElementById('cartBadge');
+        const container   = document.getElementById('cartItemsContainer');
+        const subtotalEl  = document.getElementById('subtotalPrice');
+        const totalEl     = document.getElementById('totalPrice');
+        const checkoutBtn = document.getElementById('checkoutBtn');
+        const curr        = t('wa_currency');
+
+        const totalItems  = cart.reduce((a, i) => a + i.qty, 0);
+        const subtotal    = cart.reduce((a, i) => a + i.price * i.qty, 0);
+        const deliveryFee = (subtotal >= 2500 || subtotal === 0) ? 0 : 150;
+        const grandTotal  = subtotal === 0 ? 0 : subtotal + deliveryFee;
+
+        badge.innerText = totalItems;
+
+        if (cart.length === 0) {
+            container.innerHTML = `
+                <div class="text-center text-gray-500 py-12">
+                    <i class="fa-solid fa-basket-shopping text-4xl mb-3 block opacity-30"></i>
+                    ${t('cart_empty')}
+                </div>`;
+            checkoutBtn.disabled = true;
+        } else {
+            container.innerHTML = cart.map(item => `
+                <div class="flex items-center gap-3 bg-brand-bg p-3 rounded-xl border border-brand-border">
+                    <img src="${item.image}" class="w-14 h-14 rounded-lg object-cover"
+                         onerror="this.src='https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?auto=format&fit=crop&w=100&q=60'">
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-bold text-white truncate">${item.name}</h4>
+                        <p class="text-xs text-brand-red font-semibold">${item.price * item.qty}${curr}</p>
+                    </div>
+                    <div class="flex items-center gap-2 bg-brand-card px-2 py-1 rounded-lg border border-brand-border">
+                        <button onclick="updateQty(${item.id}, -1)" class="text-gray-400 hover:text-white text-xs px-1">−</button>
+                        <span class="text-xs font-bold text-white w-4 text-center">${item.qty}</span>
+                        <button onclick="updateQty(${item.id}, 1)" class="text-gray-400 hover:text-white text-xs px-1">+</button>
+                    </div>
+                </div>
+            `).join('');
+            checkoutBtn.disabled = false;
         }
 
-        function saveOrderHistory(order) {
-            const history = JSON.parse(localStorage.getItem('elsushi_orders')) || [];
-            history.unshift(order);
-            // Акыркы 100 заказды гана сактайбыз
-            localStorage.setItem('elsushi_orders', JSON.stringify(history.slice(0, 100)));
-        }
+        subtotalEl.innerText = `${subtotal}${curr}`;
+        document.getElementById('deliveryPrice').innerText =
+            (deliveryFee === 0 && subtotal > 0) ? t('cart_free_delivery') : `${deliveryFee}${curr}`;
+        totalEl.innerText = `${grandTotal}${curr}`;
 
-        // ── Cart Drawer ──
-        function toggleCart() {
-            const drawer   = document.getElementById('cartDrawer');
-            const panel    = document.getElementById('cartPanel');
-            const backdrop = document.getElementById('cartBackdrop');
-            if (drawer.classList.contains('invisible')) {
-                drawer.classList.remove('invisible', 'pointer-events-none');
-                setTimeout(() => { backdrop.classList.add('opacity-100'); panel.classList.remove('translate-x-full'); }, 10);
-            } else {
-                backdrop.classList.remove('opacity-100');
-                panel.classList.add('translate-x-full');
-                setTimeout(() => drawer.classList.add('invisible', 'pointer-events-none'), 300);
-            }
-        }
+        // Текст баскычтарды да жаңылоо
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            const val = t(key);
+            if (typeof val === 'string') el.textContent = val;
+        });
+    }
 
-        function openCheckoutModal() {
-            toggleCart();
-            updateBranchDropdown();
-            document.getElementById('checkoutModal').classList.remove('hidden');
-        }
+    // ════════════════════════════════════════════════════
+    //  WHATSAPP ЗАКАЗ
+    // ════════════════════════════════════════════════════
+    function submitOrderToWhatsapp(e) {
+        e.preventDefault();
+        const branchId       = parseInt(document.getElementById('custBranch').value);
+        const selectedBranch = branches.find(b => b.id === branchId) || branches[0];
+        const name    = document.getElementById('custName').value;
+        const phone   = document.getElementById('custPhone').value;
+        const address = document.getElementById('custAddress').value;
+        const notes   = document.getElementById('custNotes').value;
 
-        function closeCheckoutModal() {
-            document.getElementById('checkoutModal').classList.add('hidden');
-        }
+        const subtotal    = cart.reduce((a, i) => a + i.price * i.qty, 0);
+        const deliveryFee = subtotal >= 2500 ? 0 : 150;
+        const grandTotal  = subtotal + deliveryFee;
+        const curr        = t('wa_currency');
 
-        // ── Toast ──
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toastMsg').innerText = msg;
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 2500);
-        }
+        let text = t('wa_header');
+        text += t('wa_branch') + `${selectedBranch.name} (${selectedBranch.address})\n`;
+        text += t('wa_client') + `${name}\n`;
+        text += t('wa_phone')  + `${phone}\n`;
+        text += t('wa_address')+ `${address}\n`;
+        if (notes) text += t('wa_comment') + `${notes}\n`;
+        text += `\n━━━━━━━━━━━━━━━━━━\n`;
+        text += t('wa_items');
+        cart.forEach((item, idx) => {
+            text += `${idx+1}. ${item.name} × ${item.qty} = ${item.price * item.qty}${curr}\n`;
+        });
+        text += `━━━━━━━━━━━━━━━━━━\n`;
+        text += t('wa_subtotal') + `${subtotal}${curr}\n`;
+        text += t('wa_delivery') + (deliveryFee === 0 ? t('wa_free') : `${deliveryFee}${curr}`) + '\n';
+        text += t('wa_total')    + `${grandTotal}${curr}\n`;
 
-        // ── Search (бирдиктүү функция) ──
-        function handleSearch() {
-            const q1 = document.getElementById('searchInput').value.toLowerCase().trim();
-            const q2 = document.getElementById('mobileSearchInput').value.toLowerCase().trim();
-            const q = q1 || q2;
-            if (!q) return renderProducts();
-            renderProducts(products.filter(p => p.name.toLowerCase().includes(q) || (p.desc || '').toLowerCase().includes(q)));
+        saveOrderHistory({
+            id: Date.now(),
+            date: new Date().toLocaleString('ru-RU'),
+            branch: selectedBranch.name,
+            name, phone, address, notes,
+            items: cart.map(i => ({ name: i.name, qty: i.qty, price: i.price })),
+            subtotal, deliveryFee, grandTotal
+        });
+
+        window.open(`https://wa.me/${selectedBranch.phone}?text=${encodeURIComponent(text)}`, '_blank');
+        cart = [];
+        saveCart();
+        updateCartUI();
+        closeCheckoutModal();
+        showToast(t('order_sent_toast'));
+    }
+
+    function saveOrderHistory(order) {
+        const history = JSON.parse(localStorage.getItem('elsushi_orders')) || [];
+        history.unshift(order);
+        localStorage.setItem('elsushi_orders', JSON.stringify(history.slice(0, 100)));
+    }
+
+    // ════════════════════════════════════════════════════
+    //  CART DRAWER
+    // ════════════════════════════════════════════════════
+    function toggleCart() {
+        const drawer   = document.getElementById('cartDrawer');
+        const panel    = document.getElementById('cartPanel');
+        const backdrop = document.getElementById('cartBackdrop');
+        if (drawer.classList.contains('invisible')) {
+            drawer.classList.remove('invisible', 'pointer-events-none');
+            setTimeout(() => { backdrop.classList.add('opacity-100'); panel.classList.remove('translate-x-full'); }, 10);
+        } else {
+            backdrop.classList.remove('opacity-100');
+            panel.classList.add('translate-x-full');
+            setTimeout(() => drawer.classList.add('invisible', 'pointer-events-none'), 300);
         }
+    }
+
+    function openCheckoutModal() {
+        toggleCart();
+        updateBranchDropdown();
+        // Checkout modal текстин жаңылоо
+        applyTranslations();
+        document.getElementById('checkoutModal').classList.remove('hidden');
+    }
+
+    function closeCheckoutModal() {
+        document.getElementById('checkoutModal').classList.add('hidden');
+    }
+
+    // ════════════════════════════════════════════════════
+    //  TOAST
+    // ════════════════════════════════════════════════════
+    function showToast(msg) {
+        const toast = document.getElementById('toast');
+        document.getElementById('toastMsg').innerText = msg;
+        toast.classList.remove('translate-y-20', 'opacity-0');
+        setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 2500);
+    }
+
+    // ════════════════════════════════════════════════════
+    //  ИЗДӨӨ
+    // ════════════════════════════════════════════════════
+    function handleSearch() {
+        const q1 = document.getElementById('searchInput').value.toLowerCase().trim();
+        const q2 = document.getElementById('mobileSearchInput').value.toLowerCase().trim();
+        const q  = q1 || q2;
+        if (!q) return renderProducts();
+        renderProducts(products.filter(p =>
+            p.name.toLowerCase().includes(q) || (p.desc || '').toLowerCase().includes(q)
+        ));
+    }
     </script>
 </body>
 </html>

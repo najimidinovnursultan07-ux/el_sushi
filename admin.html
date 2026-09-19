@@ -247,10 +247,12 @@
             <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
                 <i class="fa-solid fa-tags text-green-500"></i> Жаңы Категория кошуу
             </h3>
-            <form onsubmit="handleAddNewCategory(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <input type="text" id="newCatId"    required placeholder="Категория ID (мис: soups)"
+            <form onsubmit="handleAddNewCategory(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <input type="text" id="newCatId"      required placeholder="ID (мис: soups)"
                     class="bg-brand-bg border border-brand-border rounded-xl p-3 text-sm text-white focus:outline-none focus:border-brand-red">
-                <input type="text" id="newCatLabel" required placeholder="Аты (мис: Суптар)"
+                <input type="text" id="newCatLabelRu" required placeholder="Аты (RU): Супы"
+                    class="bg-brand-bg border border-brand-border rounded-xl p-3 text-sm text-white focus:outline-none focus:border-brand-red">
+                <input type="text" id="newCatLabelKy" required placeholder="Аты (КГ): Суптар"
                     class="bg-brand-bg border border-brand-border rounded-xl p-3 text-sm text-white focus:outline-none focus:border-brand-red">
                 <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition">
                     Категория кошуу
@@ -461,12 +463,12 @@
 //  МААЛЫМАТТАР ЖАНА DEFAULT МААНИЛЕР
 // ══════════════════════════════════════════════════
 const defaultCategories = [
-    { id: 'all', label: 'Бардыгы' },
-    { id: 'rolls', label: 'Роллдор' },
-    { id: 'sets', label: 'Сеттер' },
-    { id: 'tempura', label: 'Темпура' },
-    { id: 'sushi', label: 'Суши' },
-    { id: 'drinks', label: 'Суусундуктар' }
+    { id: 'all',     label: 'Все / Бардыгы',     label_ru: 'Все',      label_ky: 'Бардыгы' },
+    { id: 'rolls',   label: 'Роллы / Роллдор',   label_ru: 'Роллы',    label_ky: 'Роллдор' },
+    { id: 'sets',    label: 'Сеты / Сеттер',     label_ru: 'Сеты',     label_ky: 'Сеттер' },
+    { id: 'tempura', label: 'Темпура',            label_ru: 'Темпура',  label_ky: 'Темпура' },
+    { id: 'sushi',   label: 'Суши',              label_ru: 'Суши',     label_ky: 'Суши' },
+    { id: 'drinks',  label: 'Напитки / Суусундуктар', label_ru: 'Напитки', label_ky: 'Суусундуктар' }
 ];
 const defaultBranches = [
     { id: 1, name: 'Эл суши - Бишкек Центр', address: 'Манас проспектиси 40', phone: '996555001122' },
@@ -754,10 +756,11 @@ function deleteBranch(id) {
 // ══════════════════════════════════════════════════
 function handleAddNewCategory(e) {
     e.preventDefault();
-    const id    = document.getElementById('newCatId').value.toLowerCase().replace(/\s+/g, '');
-    const label = document.getElementById('newCatLabel').value.trim();
+    const id      = document.getElementById('newCatId').value.toLowerCase().replace(/\s+/g, '');
+    const labelRu = document.getElementById('newCatLabelRu').value.trim();
+    const labelKy = document.getElementById('newCatLabelKy').value.trim();
     if (categories.some(c => c.id === id)) return showToast('Бул ID колдонулуп жатат!', 'error');
-    categories.push({ id, label });
+    categories.push({ id, label: `${labelRu} / ${labelKy}`, label_ru: labelRu, label_ky: labelKy });
     localStorage.setItem('elsushi_categories', JSON.stringify(categories));
     renderAdminTables();
     renderCategorySelect();
@@ -864,10 +867,13 @@ function renderAdminTables() {
     // Categories
     document.getElementById('adminCategoriesTable').innerHTML = categories.map(c => {
         const count = products.filter(p => p.category === c.id).length;
+        const displayLabel = c.label_ru
+            ? `${c.label_ru} <span class="text-gray-500">/ ${c.label_ky || ''}</span>`
+            : c.label || c.id;
         return `
             <tr class="border-b border-brand-border/40 hover:bg-white/5 transition">
                 <td class="p-3 font-mono text-xs text-gray-400">${c.id}</td>
-                <td class="p-3 font-bold text-white">${c.label}</td>
+                <td class="p-3 font-bold text-white">${displayLabel}</td>
                 <td class="p-3 text-sm text-gray-400">${c.id === 'all' ? '—' : count + ' товар'}</td>
                 <td class="p-3 text-right">
                     ${c.id !== 'all'
@@ -884,13 +890,14 @@ function renderAdminTables() {
 
 function getCatLabel(id) {
     const cat = categories.find(c => c.id === id);
-    return cat ? cat.label : id;
+    if (!cat) return id;
+    return cat.label_ru || cat.label || id;
 }
 
 function renderCategorySelect() {
     const select = document.getElementById('newProdCategory');
     select.innerHTML = categories.filter(c => c.id !== 'all').map(c =>
-        `<option value="${c.id}">${c.label}</option>`
+        `<option value="${c.id}">${c.label_ru || c.label || c.id}</option>`
     ).join('');
 }
 
