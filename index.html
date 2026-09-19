@@ -314,6 +314,28 @@
                     <label data-i18n="checkout_branch_label" class="block text-xs font-semibold uppercase text-brand-gold mb-1"></label>
                     <select id="custBranch" required class="w-full bg-brand-bg border border-brand-gold/50 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-brand-gold"></select>
                 </div>
+
+                <!-- Доставка / Самовывоз тандоо -->
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-gray-400 mb-2" data-i18n="checkout_delivery_type_label"></label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="delivery-type-btn cursor-pointer" id="typeDeliveryLabel">
+                            <input type="radio" name="deliveryType" value="delivery" class="hidden" checked onchange="toggleDeliveryType('delivery')">
+                            <div class="flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 border-brand-red bg-brand-red/10 transition text-center">
+                                <i class="fa-solid fa-motorcycle text-brand-red text-xl"></i>
+                                <span data-i18n="checkout_delivery_option" class="text-sm font-bold text-white"></span>
+                            </div>
+                        </label>
+                        <label class="delivery-type-btn cursor-pointer" id="typePickupLabel">
+                            <input type="radio" name="deliveryType" value="pickup" class="hidden" onchange="toggleDeliveryType('pickup')">
+                            <div class="flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 border-brand-border bg-transparent transition text-center">
+                                <i class="fa-solid fa-store text-gray-400 text-xl"></i>
+                                <span data-i18n="checkout_pickup_option" class="text-sm font-bold text-gray-400"></span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
                 <div>
                     <label data-i18n="checkout_name_label" class="block text-xs font-semibold uppercase text-gray-400 mb-1"></label>
                     <input type="text" required id="custName" data-i18n-placeholder="checkout_name_placeholder"
@@ -324,11 +346,14 @@
                     <input type="tel" required id="custPhone" placeholder="0 (555) 00-00-00"
                         class="w-full bg-brand-bg border border-brand-border rounded-xl p-3 text-sm text-white focus:outline-none focus:border-brand-red">
                 </div>
-                <div>
+
+                <!-- Дарек — жеткирүүдө гана -->
+                <div id="addressBlock">
                     <label data-i18n="checkout_address_label" class="block text-xs font-semibold uppercase text-gray-400 mb-1"></label>
-                    <input type="text" required id="custAddress" data-i18n-placeholder="checkout_address_placeholder"
+                    <input type="text" id="custAddress" data-i18n-placeholder="checkout_address_placeholder"
                         class="w-full bg-brand-bg border border-brand-border rounded-xl p-3 text-sm text-white focus:outline-none focus:border-brand-red">
                 </div>
+
                 <div>
                     <label data-i18n="checkout_notes_label" class="block text-xs font-semibold uppercase text-gray-400 mb-1"></label>
                     <textarea id="custNotes" rows="2" data-i18n-placeholder="checkout_notes_placeholder"
@@ -463,6 +488,9 @@
             checkout_title:           'Оформление заказа',
             checkout_subtitle:        'После выбора филиала заказ будет отправлен на их WhatsApp',
             checkout_branch_label:    '1. Выберите филиал *',
+            checkout_delivery_type_label: '2. Способ получения',
+            checkout_delivery_option: 'Доставка',
+            checkout_pickup_option:   'Самовывоз',
             checkout_name_label:      'Ваше имя *',
             checkout_name_placeholder:'Например: Иван',
             checkout_phone_label:     'Ваш номер телефона *',
@@ -486,6 +514,8 @@
             wa_subtotal:              '💰 *Блюда:* ',
             wa_delivery:              '🚚 *Доставка:* ',
             wa_total:                 '🔥 *ИТОГО:* ',
+            wa_delivery_type_delivery: '🚚 *Способ получения:* Доставка',
+            wa_delivery_type_pickup:   '🏪 *Способ получения:* Самовывоз',
             wa_free:                  'БЕСПЛАТНО',
             wa_currency:              ' сом',
         },
@@ -547,6 +577,9 @@
             checkout_title:           'Заказды тариздөө',
             checkout_subtitle:        'Филиалды тандасаңыз заказ алардын WhatsApp номерине жөнөтүлөт',
             checkout_branch_label:    '1. Филиалды тандаңыз *',
+            checkout_delivery_type_label: '2. Алуу ыкмасы',
+            checkout_delivery_option: 'Жеткирүү',
+            checkout_pickup_option:   'Өзү алып кетүү',
             checkout_name_label:      'Аты-жөнүңүз *',
             checkout_name_placeholder:'Мисалы: Асан',
             checkout_phone_label:     'Телефон номериңиз *',
@@ -570,6 +603,8 @@
             wa_subtotal:              '💰 *Тамактар:* ',
             wa_delivery:              '🚚 *Жеткирүү:* ',
             wa_total:                 '🔥 *ЖАЛПЫ СУММА:* ',
+            wa_delivery_type_delivery: '🚚 *Алуу ыкмасы:* Жеткирүү',
+            wa_delivery_type_pickup:   '🏪 *Алуу ыкмасы:* Өзү алып кетүү',
             wa_free:                  'АКЫСЫЗ',
             wa_currency:              ' сом',
         }
@@ -849,7 +884,8 @@
 
         const totalItems  = cart.reduce((a, i) => a + i.qty, 0);
         const subtotal    = cart.reduce((a, i) => a + i.price * i.qty, 0);
-        const deliveryFee = (subtotal >= 2500 || subtotal === 0) ? 0 : 150;
+        const isPickup    = document.querySelector('input[name="deliveryType"]:checked')?.value === 'pickup';
+        const deliveryFee = (isPickup || subtotal >= 2500 || subtotal === 0) ? 0 : 150;
         const grandTotal  = subtotal === 0 ? 0 : subtotal + deliveryFee;
 
         badge.innerText = totalItems;
@@ -894,6 +930,58 @@
     }
 
     // ════════════════════════════════════════════════════
+    //  ДОСТАВКА / САМОВЫВОЗ ТАНДОО
+    // ════════════════════════════════════════════════════
+    function toggleDeliveryType(type) {
+        const addrBlock = document.getElementById('addressBlock');
+        const addrInput = document.getElementById('custAddress');
+        const deliveryDiv = document.querySelector('#typeDeliveryLabel > div');
+        const pickupDiv   = document.querySelector('#typePickupLabel > div');
+        const deliveryIcon = deliveryDiv.querySelector('i');
+        const pickupIcon   = pickupDiv.querySelector('i');
+        const deliveryText = deliveryDiv.querySelector('span');
+        const pickupText   = pickupDiv.querySelector('span');
+
+        if (type === 'delivery') {
+            // Доставка активдүү
+            deliveryDiv.classList.add('border-brand-red','bg-brand-red/10');
+            deliveryDiv.classList.remove('border-brand-border','bg-transparent');
+            deliveryIcon.classList.add('text-brand-red');
+            deliveryIcon.classList.remove('text-gray-400');
+            deliveryText.classList.add('text-white');
+            deliveryText.classList.remove('text-gray-400');
+
+            pickupDiv.classList.remove('border-brand-red','bg-brand-red/10');
+            pickupDiv.classList.add('border-brand-border','bg-transparent');
+            pickupIcon.classList.remove('text-brand-red');
+            pickupIcon.classList.add('text-gray-400');
+            pickupText.classList.remove('text-white');
+            pickupText.classList.add('text-gray-400');
+
+            addrBlock.classList.remove('hidden');
+            addrInput.required = true;
+        } else {
+            // Самовывоз активдүү
+            pickupDiv.classList.add('border-brand-red','bg-brand-red/10');
+            pickupDiv.classList.remove('border-brand-border','bg-transparent');
+            pickupIcon.classList.add('text-brand-red');
+            pickupIcon.classList.remove('text-gray-400');
+            pickupText.classList.add('text-white');
+            pickupText.classList.remove('text-gray-400');
+
+            deliveryDiv.classList.remove('border-brand-red','bg-brand-red/10');
+            deliveryDiv.classList.add('border-brand-border','bg-transparent');
+            deliveryIcon.classList.remove('text-brand-red');
+            deliveryIcon.classList.add('text-gray-400');
+            deliveryText.classList.remove('text-white');
+            deliveryText.classList.add('text-gray-400');
+
+            addrBlock.classList.add('hidden');
+            addrInput.required = false;
+        }
+    }
+
+    // ════════════════════════════════════════════════════
     //  WHATSAPP ЗАКАЗ
     // ════════════════════════════════════════════════════
     function submitOrderToWhatsapp(e) {
@@ -904,17 +992,21 @@
         const phone   = document.getElementById('custPhone').value;
         const address = document.getElementById('custAddress').value;
         const notes   = document.getElementById('custNotes').value;
+        const isPickup = document.querySelector('input[name="deliveryType"]:checked')?.value === 'pickup';
 
         const subtotal    = cart.reduce((a, i) => a + i.price * i.qty, 0);
-        const deliveryFee = subtotal >= 2500 ? 0 : 150;
+        // Самовывозда жеткирүү акысы жок
+        const deliveryFee = isPickup ? 0 : (subtotal >= 2500 ? 0 : 150);
         const grandTotal  = subtotal + deliveryFee;
         const curr        = t('wa_currency');
 
         let text = t('wa_header');
         text += t('wa_branch') + `${selectedBranch.name} (${selectedBranch.address})\n`;
+        // Алуу ыкмасы
+        text += (isPickup ? t('wa_delivery_type_pickup') : t('wa_delivery_type_delivery')) + '\n';
         text += t('wa_client') + `${name}\n`;
         text += t('wa_phone')  + `${phone}\n`;
-        text += t('wa_address')+ `${address}\n`;
+        if (!isPickup && address) text += t('wa_address') + `${address}\n`;
         if (notes) text += t('wa_comment') + `${notes}\n`;
         text += `\n━━━━━━━━━━━━━━━━━━\n`;
         text += t('wa_items');
@@ -923,14 +1015,17 @@
         });
         text += `━━━━━━━━━━━━━━━━━━\n`;
         text += t('wa_subtotal') + `${subtotal}${curr}\n`;
-        text += t('wa_delivery') + (deliveryFee === 0 ? t('wa_free') : `${deliveryFee}${curr}`) + '\n';
+        text += t('wa_delivery') + (isPickup ? t('checkout_pickup_option') : (deliveryFee === 0 ? t('wa_free') : `${deliveryFee}${curr}`)) + '\n';
         text += t('wa_total')    + `${grandTotal}${curr}\n`;
 
         saveOrderHistory({
             id: Date.now(),
             date: new Date().toLocaleString('ru-RU'),
             branch: selectedBranch.name,
-            name, phone, address, notes,
+            deliveryType: isPickup ? 'pickup' : 'delivery',
+            name, phone,
+            address: isPickup ? '—' : address,
+            notes,
             items: cart.map(i => ({ name: i.name, qty: i.qty, price: i.price })),
             subtotal, deliveryFee, grandTotal
         });
