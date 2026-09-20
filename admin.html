@@ -360,6 +360,14 @@
                     class="w-full mt-2 bg-brand-bg border border-red-500/40 text-red-400 hover:bg-red-500/10 font-bold py-3 rounded-xl transition text-sm">
                     <i class="fa-solid fa-rotate-left mr-2"></i>Маалыматтарды баштапкы абалга кайтаруу
                 </button>
+                <div class="mt-3 bg-brand-red/10 border border-brand-red/30 rounded-xl p-3 text-xs text-gray-400 leading-relaxed">
+                    <i class="fa-solid fa-triangle-exclamation text-brand-red mr-1"></i>
+                    <b class="text-white">Маанилүү:</b> Бул статикалык сайт. Admin'ден кошкон товарлар <b class="text-brand-gold">index.html файлына жазылганда</b> гана баарына көрүнөт. Кошкондон кийин <b class="text-white">«Кодго чыгаруу»</b> баскычын басып, Kiro'го жөнөтүңүз.
+                </div>
+                <button onclick="exportToCode()"
+                    class="w-full mt-2 bg-brand-gold text-black hover:bg-yellow-400 font-bold py-3 rounded-xl transition text-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-code"></i> Кодго чыгаруу (баарына көрүнүшү үчүн)
+                </button>
             </div>
         </div>
 
@@ -447,9 +455,9 @@ const defaultSiteSettings = {
     telegram: 'https://t.me'
 };
 
-let categories   = JSON.parse(localStorage.getItem('elsushi_categories')) || defaultCategories;
-let branches     = JSON.parse(localStorage.getItem('elsushi_branches'))   || defaultBranches;
-let products     = JSON.parse(localStorage.getItem('elsushi_products'))   || defaultProducts;
+let categories   = defaultCategories;
+let branches     = defaultBranches;
+let products     = [...defaultProducts];
 let siteSettings = JSON.parse(localStorage.getItem('elsushi_settings'))   || defaultSiteSettings;
 
 let selectedBase64Image = '';
@@ -937,6 +945,38 @@ function updateSiteInfo() {
     const kb = (totalBytes / 1024).toFixed(1);
     const maxKb = 5120;
     document.getElementById('infoStorage').innerText = `${kb} KB / ${maxKb} KB`;
+}
+
+function exportToCode() {
+    const lines = products.map(p => {
+        const parts = [
+            `id: ${p.id}`,
+            `name: ${JSON.stringify(p.name)}`,
+            `category: ${JSON.stringify(p.category)}`,
+            `price: ${p.price}`,
+            p.weight ? `weight: ${JSON.stringify(p.weight)}` : null,
+            p.desc   ? `desc: ${JSON.stringify(p.desc)}`     : null,
+            `image: ${JSON.stringify(p.image || '')}`,
+            p.badge  ? `badge: ${JSON.stringify(p.badge)}`   : null,
+        ].filter(Boolean).join(', ');
+        return `        { ${parts} }`;
+    });
+
+    const out = `    const defaultProducts = [\n${lines.join(',\n')}\n    ];`;
+
+    // Clipboard'го copy
+    navigator.clipboard.writeText(out).then(() => {
+        showToast('✅ Код көчүрүлдү! Kiro\'го жөнөтүп, деплой кылыңыз.');
+    }).catch(() => {
+        // Fallback — textarea аркылуу
+        const ta = document.createElement('textarea');
+        ta.value = out;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        showToast('✅ Код көчүрүлдү!');
+    });
 }
 
 function handleResetData() {

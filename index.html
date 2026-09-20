@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <script>
+    <script type="text/javascript">
         tailwind.config = {
             theme: {
                 extend: {
@@ -187,7 +187,7 @@
                 <select id="categorySelect"
                     onchange="filterCategory(this.value)"
                     class="sm:hidden w-full bg-brand-card border border-brand-border text-white text-sm font-semibold rounded-xl px-4 py-2.5 focus:outline-none focus:border-brand-red appearance-none cursor-pointer"
-                    style="background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24'%3E%3Cpath stroke='%239CA3AF' stroke-width='2' d='M6 9l6 6 6-6'/%3E%3C/svg%3E\"); background-repeat:no-repeat; background-position:right 12px center; background-size:18px; padding-right:36px;">
+                    style="background-image:url\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24'%3E%3Cpath stroke='%239CA3AF' stroke-width='2' d='M6 9l6 6 6-6'/%3E%3C/svg%3E\"; background-repeat:no-repeat; background-position:right 12px center; background-size:18px; padding-right:36px;">
                 </select>
                 <!-- Десктоп баскычтар -->
                 <div class="hidden sm:flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar" id="categoryContainer"></div>
@@ -470,7 +470,7 @@
             branches_subtitle:        'Позвоните или напишите нам в WhatsApp в любой из наших филиалов',
             branch_whatsapp:          'Написать в WhatsApp',
             // Branch count
-            branch_count:             (n) => `${n} ${n===1?'филиал работает':(n>=2&&n<=4?'филиала работают':'филиалов работают')}`,
+            branch_count:             function(n) { return n + ' ' + (n===1?'филиал работает':(n>=2&&n<=4?'филиала работают':'филиалов работают')); },
             work_hours_prefix:        'Режим работы: ',
             daily_prefix:             'Ежедневно: ',
             // Footer
@@ -493,7 +493,7 @@
             cart_checkout_btn:        'Выбрать филиал и оформить заказ',
             cart_free_delivery:       'БЕСПЛАТНО 🎉',
             cart_confirm_clear:       'Очистить корзину?',
-            cart_added_toast:         (name) => `"${name}" добавлен в корзину`,
+            cart_added_toast:         function(name) { return '"' + name + '" добавлен в корзину'; },
             // Checkout
             checkout_title:           'Оформление заказа',
             checkout_subtitle:        'После выбора филиала заказ будет отправлен на их WhatsApp',
@@ -559,7 +559,7 @@
             branches_subtitle:        'Каалаган филиалыбызга түздөн-түз чалып же WhatsApp аркылуу жазсаңыз болот',
             branch_whatsapp:          'WhatsApp аркылуу байланышуу',
             // Branch count
-            branch_count:             (n) => `${n} филиал иштеп жатат`,
+            branch_count:             function(n) { return n + ' филиал иштеп жатат'; },
             work_hours_prefix:        'Иштөө убактысы: ',
             daily_prefix:             'Күн сайын: ',
             // Footer
@@ -582,7 +582,7 @@
             cart_checkout_btn:        'Филиалды тандап заказ берүү',
             cart_free_delivery:       'АКЫСЫЗ 🎉',
             cart_confirm_clear:       'Себетти тазалайсызбы?',
-            cart_added_toast:         (name) => `"${name}" себетке кошулду`,
+            cart_added_toast:         function(name) { return '"' + name + '" себетке кошулду'; },
             // Checkout
             checkout_title:           'Заказды тариздөө',
             checkout_subtitle:        'Филиалды тандасаңыз заказ алардын WhatsApp номерине жөнөтүлөт',
@@ -733,12 +733,17 @@
         telegram: 'https://t.me'
     };
 
-    let categories   = JSON.parse(localStorage.getItem('elsushi_categories')) || defaultCategories;
-    let branches     = JSON.parse(localStorage.getItem('elsushi_branches'))   || defaultBranches;
-    let products     = JSON.parse(localStorage.getItem('elsushi_products'))   || defaultProducts;
-    let siteSettings = JSON.parse(localStorage.getItem('elsushi_settings'))   || defaultSiteSettings;
-    let cart         = JSON.parse(localStorage.getItem('elsushi_cart'))        || [];
+    let categories   = defaultCategories;
+    let branches     = defaultBranches;
+    let products     = defaultProducts;
+    let siteSettings = JSON.parse(localStorage.getItem('elsushi_settings')) || defaultSiteSettings;
+    let cart         = JSON.parse(localStorage.getItem('elsushi_cart'))     || [];
     let activeCategory = 'all';
+
+    // Эски localStorage маалыматтарын тазалоо — меню/филиал/категория дайыма кодтон келсин
+    localStorage.removeItem('elsushi_products');
+    localStorage.removeItem('elsushi_categories');
+    localStorage.removeItem('elsushi_branches');
 
     function saveCart() { localStorage.setItem('elsushi_cart', JSON.stringify(cart)); }
 
